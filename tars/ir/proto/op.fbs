@@ -1,0 +1,90 @@
+include "types.fbs";
+include "tensor.fbs";
+include "op_option.fbs";
+
+
+namespace ace;
+
+enum OpType : int {
+  Default = 0,
+  // Constant Operators
+  Const,
+  // Elementwise Operators
+  Abs,
+  BoundedRelu,
+  Clip,
+  ClipV2,
+  ClippedRelu,
+  Elu,
+  Exp,
+  GeluTanh,
+  HardSigmoid,
+  HardSwish,
+  LeakyRelu,
+  Linear,
+  Log,
+  Logistic,
+  LogSigmoid,
+  Mish,
+  Pow,
+  PRelu,
+  Relu,
+  Relu6,
+  Round,
+  Selu,
+  Sigmoid,
+  SoftRelu,
+  SoftReluV2,
+  Sqrt,
+  Swish,
+  Tanh,
+  // Binary Operators 
+  Add,
+  Mul,
+  Min,
+  Max,
+  Mean,
+  Div,
+  GreaterEqual,
+  GreaterThan,
+  LessEqual,
+  LessThan,
+  EqualTo,
+  NotEqual,
+  // Reduction Operators 
+  ReduceMin,
+  ReduceMax,
+  ReduceMean,
+  ReduceSum,
+  ReduceMul, 
+  // Others
+  Pool2D,
+  Pool3D,
+  Reshape,
+  Slice,  
+  Flatten,
+  Permute,
+  ArgMax,
+  BatchNorm,
+  Conv2D,
+  Conv3D, 
+  InnerProduct,
+  LRN,
+  Normalize,
+  PriorBox,  
+  Proposal, 
+  Resize,
+  RoiPooling, 
+  Scale,
+  Softmax, 
+  Input,
+}
+
+table Op {
+  name: string;
+  inputs: [int32]; 
+  outputs: [int32];
+  option: OpOption;
+  type: OpType;
+  desc: string;
+}

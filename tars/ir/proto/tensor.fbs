@@ -1,0 +1,54 @@
+include "types.fbs";
+
+namespace ace;
+
+table CacheDataProto {
+  u: [uint8];    // uint8   array
+  c: [int8];     // int8    array
+  s: [string];   // string  array
+  i: [int32];    // int32   array
+  l: [int64];    // int64   array
+  f: [float32];    // float32 array
+  size: int64;   // data size
+}
+
+table TensorShapeProto {
+  dims: [int32];
+}
+
+table TensorProto {
+  name: string; 
+  shape: TensorShapeProto;
+  valid_shape: TensorShapeProto;
+  dtype: DataType = FLOAT_32;
+  dformat: DataFormat = NCHW;
+  data: CacheDataProto;
+  scale: CacheDataProto; 
+}
+
+
+// borrow this code from https://github.com/alibaba/MNN
+table ListValue {
+    s:[string];
+    i:[int];
+    f:[float];
+    b:[bool];
+    type:[DataType];
+}
+
+table Attribute {
+    s:string;
+    i:int = 0;
+    b:bool = false;
+    key:string(key);
+    type:DataType;
+    f:float = 0.0;
+    tensor:TensorProto;
+    list:ListValue;
+    func:NamedAttrList;
+}
+
+table NamedAttrList {
+    name: string;
+    attr: [Attribute];
+}

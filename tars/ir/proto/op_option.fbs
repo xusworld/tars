@@ -1,0 +1,625 @@
+include "types.fbs";
+include "tensor.fbs";
+
+namespace ace;
+
+// Operators List
+//
+// 1. Elementwise Operators
+// - Abs
+// - BoundedRelu
+// - Clip 
+// - ClipV2
+// - Elu
+// - Exp
+// - GeluTanh
+// - HardSigmoid
+// - HardSwish
+// - Linear
+// - Log
+// - Logistic
+// - LogSigmoid
+// - Mish
+// - Pow
+// - PRelu
+// - Relu
+// - Relu6
+// - ClipedRelu
+// - LeakyRelu
+// - Round
+// - Selu
+// - Sigmoid
+// - SoftRelu
+// - SoftReluV2
+// - Sqrt
+// - Swish
+// - Tanh
+//
+// 2. Binary Opeartors
+// - Add
+// - Mul
+// - Max
+// - Mean
+// - Div
+// - GE
+// - GT
+// - LE
+// - LT
+// - EQ
+// - NE
+//
+// 3. Reduction Operators
+// - ReduceMin
+// - ReduceMax
+// - ReduceMean
+// - ReduceSum
+// - ReduceMul
+// 
+// 4. Pool
+// - Pool2D
+// - Pool3D
+// 
+// 3. Reshape/Slice/Permute/Flatten Operators
+//
+// 4. Others
+// - ArgMax
+// - BatchNorm
+// - Conv2D/Conv3D
+// - InnerProduct
+// - LRN
+// - Normalize
+// - PriorBox
+// - Proposal
+// - Resize
+// - RoiPooling
+// - Scale
+// - Softmax
+
+table AbsOption {
+
+}
+
+table BoundedReluOption {
+
+}
+
+table ClipOption {
+
+}
+
+table ClipV2Option {
+
+}
+
+table EluOption {
+  alpha: float32 = 1.0;
+}
+
+table ExpOption {
+
+}
+
+table GeluTanhOption {
+
+}
+
+table HardSigmoidOption {
+
+}
+
+table HardSwishOption {
+
+}
+
+table LinearOption {
+
+}
+
+table LogOption {
+
+}
+
+table LogisticOption {
+
+}
+
+table MishOption {
+
+}
+
+table PowOption {
+
+}
+
+table PReluOption {
+  slopeCount:int;
+  slope:[float];
+}
+
+table ReluOption {
+  slope:float;
+}
+
+table Relu6Option {
+ minval:float = 0.0;
+ maxval:float = 6.0;
+}
+
+table ClippedReluOption {
+  threashod:float;
+}
+
+table LeakyReluOption {
+  negative_slope:float = 0.01;
+}
+
+table LogSigmoidOption {
+
+}
+
+table RoundOption {
+
+}
+
+table SeluOption {
+  scale:float = 1.050700;
+  alpha:float = 1.673263;
+}
+
+table SigmoidOption {
+}
+
+table SoftReluOption {
+
+} 
+
+
+table SoftReluV2Option {
+
+} 
+
+
+table SqrtOption {
+
+} 
+
+
+table SwishOption {
+
+} 
+
+
+table TanhOption {
+}
+
+
+table ConstOption {
+  tensor:TensorProto;
+}
+
+
+
+table NoneElementwiseOption {
+}
+
+union ElementwiseOption {
+  AbsOption,
+  BoundedReluOption,
+  ClipOption,
+  ClipV2Option,
+  ClippedReluOption,
+  EluOption,
+  ExpOption,
+  GeluTanhOption,
+  HardSigmoidOption,
+  HardSwishOption,
+  LeakyReluOption,
+  LinearOption,
+  LogOption,
+  LogisticOption,
+  LogSigmoidOption,
+  MishOption,
+  PowOption,
+  PReluOption,
+  ReluOption,
+  Relu6Option,
+  RoundOption,
+  SeluOption,
+  SigmoidOption,
+  SoftReluOption,
+  SoftReluV2Option,
+  SqrtOption,
+  SwishOption,
+  TanhOption,
+  NoneElementwiseOption,
+}
+
+// - Add
+// - Mul
+// - Min
+// - Max
+// - Mean
+// - Div
+// - GreaterEqual
+// - GreatherThan
+// - LessEqual
+// - LessThan
+// - EqualTo
+// - NotEqual
+
+table AddOption {
+
+}
+
+table MulOption {
+
+}
+
+table MinOption {
+
+}
+
+table MaxOption {
+
+}
+
+table MeanOption {
+
+}
+
+table DivOption {
+
+}
+
+table GreaterEqualOption {
+
+}
+
+table GreaterThanOption {
+
+}
+
+table LessEqualOption {
+
+}
+
+table LessThanOption {
+
+}
+
+table EqualToOption {
+
+}
+
+table NotEqualOption {
+
+}
+
+union BinaryOption {
+  AddOption,
+  MulOption,
+  MinOption,
+  MaxOption,
+  MeanOption,
+  DivOption,
+  GreaterEqualOption,
+  GreaterThanOption,
+  LessEqualOption,
+  LessThanOption,
+  EqualToOption,
+  NotEqualOption,
+}
+
+
+table ReduceMinOption {
+
+}
+
+table ReduceMaxOption {
+  
+}
+
+table ReduceMeanOption {
+  
+}
+
+table ReduceSumOption {
+  
+}
+
+table ReduceMulOption {
+  
+}
+
+union ReduceOption {
+  ReduceMinOption,
+  ReduceMaxOption,
+  ReduceMeanOption,
+  ReduceSumOption,
+  ReduceMulOption, 
+}
+
+
+enum PoolType: byte {
+  MAX_POOL,
+  AVG_POOL,
+  GLOBAL_MAX_POOL,
+  GLOBAL_AVG_POOL, 
+}
+
+enum PaddingType : byte {
+    VALID,
+    SAME
+}
+
+table Pool2DOption {
+  size:[int32]; // pooling kernel size, a (height, width) pair
+  type:PoolType;
+  strides:[int32]; // pooling strides size, a (height, width) pair 
+  padding:[int32];  
+  padtype:PaddingType;
+  global_pooling:bool = false;
+  ceil_mode:bool = false;
+  exclusive:bool = true;
+}
+
+
+table Pool3DOption {
+}
+
+
+table ReshapeOption {
+  dims:[int];
+  dimType: DataFormat;
+}
+
+table SliceOption {
+  axis:int;
+  slicePoints:[int];
+  sourceType:FrontendFramework;
+}
+
+table FlattenOption {
+  axis:int;
+  endAxis:int;
+}
+
+table PermuteOption {
+  dims:[int];
+}
+
+
+table ArgMaxOption {
+    outMaxVal:int;
+    topK:int;
+    axis:int;
+    softmaxThreshold:int;
+}
+
+table BatchNormOption {
+  channels:int;
+  slopeData:[float];
+  meanData:[float];
+  varData:[float];
+  biasData:[float];
+  Adata:[float];
+  Bdata:[float];
+  epsilon:float=0.001;
+}
+
+enum PadMode : byte{
+    CAFFE=0,
+    VALID=1,
+    SAME=2
+}
+/*
+table Convolution2D {
+    common:Convolution2DCommon;
+    weight:[float];
+    bias:[float];
+    quanParameter:IDSTQuan;
+    symmetricQuan:QuantizedFloatParam;
+    sparseParameter:SparseCommon;
+}
+
+table Convolution3D {
+    common:Convolution3DCommon;
+    weight:[float];
+    bias:[float];
+}
+*/
+table Conv2DOption {
+    padX:int = 0;
+    padY:int = 0;
+    kernelX:int = 1;
+    kernelY:int = 1;
+    strideX:int = 1;
+    strideY:int = 1;
+    dilateX:int = 1;
+    dilateY:int = 1;
+    padMode:PadMode = CAFFE;
+    group:int = 1;
+    outputCount:int = 0;
+    inputCount:int = 0;
+    relu:bool=false;
+    relu6:bool=false;
+    pads:[int];
+    outPads:[int];
+    hasOutputShape:bool = false;
+}
+
+table Conv3DOption {
+    dilates:[int];
+    strides:[int];
+    kernels:[int];
+    pads:[int];
+    padMode:PadMode = CAFFE;
+    inputCount:int = 0;
+    outputCount:int = 0;
+    relu:bool = false;
+    relu6:bool = false;
+}
+
+
+table InnerProductOption {
+    outputCount:int;
+    biasTerm:int;
+    weightSize:int;
+    weight:[float];
+    bias:[float];
+    axis:int;
+    transpose:bool;
+}
+
+
+table LRNOption {
+    regionType:int;
+    localSize:int;
+    alpha:float;
+    beta:float;
+}
+
+
+table NormalizeOption {
+  acrossSpatial:int;
+  channelShared:int;
+  eps:float;
+  scale:[float];
+}
+
+table PriorBoxOption {
+  minSizes : [float];
+  maxSizes : [float];
+  aspectRatios : [float];
+  variances:[float];
+  flip:bool;
+  clip:bool;
+  imageWidth:int;
+  imageHeight:int;
+  stepWidth:int;
+  stepHeight:int;
+  offset:float;
+}
+
+
+table ProposalOption {
+    featStride:int;
+    baseSize:int;
+    preNmsTopN:int;
+    afterNmsTopN:int;
+    nmsThreshold:float;
+    minSize:int;
+    // ratios:Blob;
+    // scales:Blob;
+    // anchors:Blob;
+}
+
+
+table ResizeOption {
+    xScale:float;
+    yScale:float;
+}
+
+table RoiPoolingOption {
+    pooledWidth:int;
+    pooledHeight:int;
+    spatialScale:float;
+}
+
+table ScaleOption  {
+    channels:int;
+    scaleData:[float];
+    biasData:[float];
+}
+
+table SoftmaxOption {
+  axis:int32;
+}
+
+table InputOption {
+    dims:[int];
+    dtype:DataType;
+    dformat:DataFormat;
+}
+
+table DefaultOption {
+  type: string;
+  engine: string;
+  info: [byte];
+  attr:[Attribute];
+}
+
+union OpOption {
+  DefaultOption,
+  // Constant Operators
+  ConstOption,
+  // Elementwise Operators
+  AbsOption,
+  BoundedReluOption,
+  ClipOption,
+  ClipV2Option,
+  ClippedReluOption,
+  EluOption,
+  ExpOption,
+  GeluTanhOption,
+  HardSigmoidOption,
+  HardSwishOption,
+  LeakyReluOption,
+  LinearOption,
+  LogOption,
+  LogisticOption,
+  LogSigmoidOption,
+  MishOption,
+  PowOption,
+  PReluOption,
+  ReluOption,
+  Relu6Option,
+  RoundOption,
+  SeluOption,
+  SigmoidOption,
+  SoftReluOption,
+  SoftReluV2Option,
+  SqrtOption,
+  SwishOption,
+  TanhOption,
+  // Binary Operators 
+  AddOption,
+  MulOption,
+  MinOption,
+  MaxOption,
+  MeanOption,
+  DivOption,
+  GreaterEqualOption,
+  GreaterThanOption,
+  LessEqualOption,
+  LessThanOption,
+  EqualToOption,
+  NotEqualOption,
+  // Reduction Operators 
+  ReduceMinOption,
+  ReduceMaxOption,
+  ReduceMeanOption,
+  ReduceSumOption,
+  ReduceMulOption, 
+  // Others
+  Pool2DOption,
+  Pool3DOption,
+  ReshapeOption,
+  SliceOption,  
+  FlattenOption,
+  PermuteOption,
+  ArgMaxOption,
+  BatchNormOption,
+  Conv2DOption,
+  Conv3DOption, 
+  InnerProductOption,
+  LRNOption,
+  NormalizeOption,
+  PriorBoxOption,  
+  ProposalOption, 
+  ResizeOption,
+  RoiPoolingOption, 
+  ScaleOption,
+  SoftmaxOption, 
+  InputOption,
+}

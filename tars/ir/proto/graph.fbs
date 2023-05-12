@@ -1,0 +1,57 @@
+include "types.fbs";
+include "tensor.fbs";
+include "op.fbs";
+
+namespace ace;
+
+
+table Version {
+  major: int32;
+  minor: int32;
+  patch: int32;
+  version: int32;
+}
+
+table SubGraphProto {
+  // Subgraph unique name.
+  name: string;
+
+  // The ids of input tensors.
+  inputs: [int32];
+
+  // The ids of output tensors.
+  outputs: [int32];
+
+  // All tensor names.
+  // The id of each tensor is the index in the vector names.
+  tensors: [string];
+
+  // Nodes of the subgraph.
+  nodes: [Op];
+}
+
+
+table GraphProto {
+  // Graph name.
+  name: string;
+  // Ops in this graph.
+  ops: [Op];
+  // Inputs & outputs index.
+  inputs:[int32];
+  outputs:[int32];
+  // Inputs & outputs name.
+  inputs_name: [string];
+  outputs_name: [string];
+  // IR
+  ir: FrontendFramework = ONNX;
+  // All tensors' info.
+  tensors: [string];
+  // Subgraphs of the main graph.
+  subgraphs: [SubGraphProto];
+  // Graph version.
+  version: Version;
+  // Summary of this graph.
+  desc: string;
+}
+
+root_type GraphProto;
