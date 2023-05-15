@@ -107,4 +107,10 @@ inline std::ostream& operator<<(std::ostream& out_stream, TensorShape& shape) {
   return out_stream;
 }
 
+inline std::ostream& operator<<(std::ostream& out_stream,
+                                const TensorShape& shape) {
+  out_stream << shape.debug_string();
+  return out_stream;
+}
+
 }  // namespace ace
