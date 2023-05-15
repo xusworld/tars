@@ -8,28 +8,16 @@ namespace ace {
 namespace cuda {
 
 template <typename T>
-void CopyD2D(T* dst, const T* src, size_t n, cudaStream_t stream = 0) {
-  CUDA_CALL(cudaMemcpyAsync(dst, src, n * sizeof(T), cudaMemcpyDeviceToDevice,
-                            stream));
-}
+void CopyD2D(T* dst, const T* src, size_t n, cudaStream_t stream);
 
 template <typename T>
-void CopyD2H(T* dst, const T* src, size_t n, cudaStream_t stream = 0) {
-  CUDA_CALL(
-      cudaMemcpyAsync(dst, src, n * sizeof(T), cudaMemcpyDeviceToHost, stream));
-}
+void CopyD2H(T* dst, const T* src, size_t n, cudaStream_t stream);
 
 template <typename T>
-void CopyH2D(T* dst, const T* src, size_t n, cudaStream_t stream = 0) {
-  CUDA_CALL(
-      cudaMemcpyAsync(dst, src, n * sizeof(T), cudaMemcpyHostToDevice, stream));
-}
+void CopyH2D(T* dst, const T* src, size_t n, cudaStream_t stream);
 
 template <typename T>
-void CopyH2H(T* dst, const T* src, size_t n, cudaStream_t stream = 0) {
-  CUDA_CALL(
-      cudaMemcpyAsync(dst, src, n * sizeof(T), cudaMemcpyHostToHost, stream));
-}
+void CopyH2H(T* dst, const T* src, size_t n, cudaStream_t stream);
 
 }  // namespace cuda
 }  // namespace ace

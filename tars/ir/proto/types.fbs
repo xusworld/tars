@@ -15,7 +15,7 @@ enum DeviceType : byte {
   CUDA,
 }
 
-enum DataType : byte {
+enum DType : byte {
   NONE = 0,
   INT_8,
   INT_16,

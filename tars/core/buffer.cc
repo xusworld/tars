@@ -68,5 +68,6 @@ void Buffer<T>::resize(size_t new_size) {
 }
 
 template class Buffer<float>;
+template class Buffer<int>;
 
 }  // namespace ace

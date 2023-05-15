@@ -19,52 +19,18 @@ class Tensor {
   typedef typename DataTypeTraits<data_type>::value_type T;
   typedef typename DataTypeTraits<data_type>::pointer TP;
 
-  // Tensor() noexcept {}
-  // Tensor(const Tensor &) = delete;
-  // Tensor(Tensor &&other) noexcept {
-  //   data = std::move(other.data);
-  //   shape = other.shape;
-  //   other.shape.clear();
-  // }
-
-  /** @brief constructs a tensor of a specific shape
-   *
-   * Whatever arguments are accepted by the resize methods are accepted here.
-   */
-  // template <class... Args>
-  // Tensor(Args &&...sizes) {
-  //   resize(std::forward<Args>(sizes)...);
-  // }
-
-  Tensor &operator=(const Tensor &) = delete;
-  // Tensor &operator=(Tensor &&other) noexcept {
-  //   data = std::move(other.data);
-  //   shape = other.shape;
-  //   other.shape.clear();
-  //   return *this;
-  // }
-
   Tensor(const RuntimeType rtype = RuntimeType::CPU,
-         const DataType dtype = float32,
          const TensorShape &shape = TensorShape(),
          const DataFormat dformat = DataFormat_NCHW,
          const std::string &name = "")
       : rtype_(rtype),
-        dtype_(dtype),
+        dtype_(data_type),
         shape_(shape),
         valid_shape_(shape),
         dformat_(dformat),
         name_(name) {
-    buff_ = std::make_shared(Buffer<T>(rtype, dtype, shape.size()));
+    buff_ = std::make_shared<Buffer<T>>(rtype, data_type, shape.size());
   }
-
-  // Tensor(const TensorShape &shape, RuntimeType rtype = RuntimeType::CPU)
-  //     : shape_(shape), valid_shape_(shape), rtype_(rtype), dtype_(data_type)
-  //     {
-  //   offset_ = TensorShape::zero(shape);
-  //   buff_ = std::make_shared<Buffer<data_type>>(rtype_, shape.size());
-  //   is_shared_ = false;
-  // }
 
   Tensor(const Tensor &tensor) {
     shape_ = tensor.shape_;
@@ -72,11 +38,16 @@ class Tensor {
     offset_ = tensor.offset_;
     dtype_ = tensor.dtype_;
     dformat_ = tensor.dformat_;
-    is_shared_ = tensor.is_shared_;
+    shared_ = tensor.shared_;
     buff_ = tensor.buff_;
   }
 
-  ~Tensor() = default;
+  ~Tensor() {
+    LOG(INFO) << "shared: " << shared_ << " , use_count: " << buff_.use_count();
+    if (!shared_ && buff_.use_count() == 1) {
+      // buff_.reset(nullptr);
+    }
+  }
 
   // returns true if the tensor is empty (or uninitialized)
   bool empty() const noexcept { return shape_.size() == 0; }
@@ -114,15 +85,31 @@ class Tensor {
   // returns the RuntimeType of the tensor
   RuntimeType rtype() const { return rtype_; }
 
-  Status resize() { return Status::OK(); }
+  // reshape the tensor
+  Status reshape(const TensorShape &shape) { return Status::OK(); }
+  Status reshape(const std::vector<int32_t> &dims) {
+    if (!shared_) {
+      this->buff_.resize(dims);
+      this->shape_ = dims;
+      this->valid_shape_ = dims;
+    } else {
+      LOG(INFO) << "a shard tensor, cannot resize, please check";
+    }
+    return Status::OK();
+  }
 
   Status squeeze() { return Status::OK(); }
 
-  Status set_dtype() { return Status::OK(); }
-
-  Status set_dformat() { return Status::OK(); }
-
-  Status clear() { return Status::OK(); }
+  Status clear() {
+    if (buff_->use_count() == 1) {
+      buff_.reset(nullptr);
+      this->name_ = "";
+      this->shape_ = {};
+      this->valid_shape_ = {};
+      this->offset = {};
+    }
+    return Status::OK();
+  }
 
   // TODO
   Status set_dtype(const DataType dtype) {
@@ -131,7 +118,7 @@ class Tensor {
       const int32_t type_bytes = DataType2Bytes(dtype);
 
       if (buff_->capacity() < shape_.size() * type_bytes) {
-        if (is_shared_) {
+        if (shared_) {
           LOG(FATAL) << "tensor is shared, memory can not be re-alloced";
           return Status::ERROR();
         }
@@ -139,11 +126,8 @@ class Tensor {
         buff_->realloc(shape_.size() * type_bytes);
       }
     }
+    return Status::OK();
   }
-
-  Status realloc() { return Status::OK(); }
-
-  Status reshape() { return Status::OK(); }
 
  private:
   // tensor's name
@@ -163,7 +147,7 @@ class Tensor {
   // tensor's buffer
   std::shared_ptr<Buffer<T>> buff_;
 
-  bool is_shared_ = false;
+  bool shared_ = false;
 };
 
 }  // namespace ace

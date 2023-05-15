@@ -20,7 +20,7 @@ table TensorProto {
   name: string; 
   shape: TensorShapeProto;
   valid_shape: TensorShapeProto;
-  dtype: DataType = FLOAT_32;
+  dtype: DType = FLOAT_32;
   dformat: DataFormat = NCHW;
   data: CacheDataProto;
   scale: CacheDataProto; 
@@ -33,7 +33,7 @@ table ListValue {
     i:[int];
     f:[float];
     b:[bool];
-    type:[DataType];
+    type:[DType];
 }
 
 table Attribute {
@@ -41,7 +41,7 @@ table Attribute {
     i:int = 0;
     b:bool = false;
     key:string(key);
-    type:DataType;
+    type:DType;
     f:float = 0.0;
     tensor:TensorProto;
     list:ListValue;

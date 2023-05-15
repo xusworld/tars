@@ -538,7 +538,7 @@ table SoftmaxOption {
 
 table InputOption {
     dims:[int];
-    dtype:DataType;
+    dtype:DType;
     dformat:DataFormat;
 }
 
