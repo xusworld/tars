@@ -37,7 +37,7 @@ namespace ace {
 //   return 0;
 // }
 
-inline int DataType2Bytes(const DataType dtype) {
+int DataType2Bytes(const DataType dtype) {
   switch (dtype) {
     case none:
       return 0;

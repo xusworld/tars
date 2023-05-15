@@ -11,25 +11,29 @@ Status Buffer<T>::reallocate(const int32_t size) {
     LOG(WARNING) << "Not a empty buffer, please check";
   }
 
-  if (size_ <= 0) {
-    LOG(ERROR) << "Try to allocate " << size_
+  if (size <= 0) {
+    LOG(ERROR) << "Try to allocate " << size
                << " bytes memory space, which is < 0";
   }
 
+  LOG(INFO) << "size: " << size << " capacity: " << capacity_;
   if (size > capacity_) {
     if (shared_) {
       LOG(INFO) << "shard buffer, can't realloc.";
     } else {
       auto ptr = reinterpret_cast<void *>(data_);
-      this->allocator_->allocate(dtype_, size, &ptr);
-      if (ptr == nullptr) {
+      this->allocator_->allocate(&ptr, size * sizeof(T));
+      data_ = reinterpret_cast<T *>(ptr);
+
+      if (data_ == nullptr) {
         LOG(ERROR) << "Allocate memory failed.";
         return Status::FATAL("Allocate memory failed.");
       }
+      // change the value of size_ and capacity_.
+      size_ = size;
       capacity_ = size;
     }
   }
-  size_ = size;
   return Status::OK();
 }
 
@@ -66,8 +70,25 @@ void Buffer<T>::resize(size_t new_size) {
   }
   size_ = new_size;
 }
+// host memory resize
+template <typename T>
+void Buffer<T>::resize(const std::vector<int32_t> &dims) {
+  const int32_t size =
+      std::accumulate(dims.begin(), dims.end(), 1, std::multiplies<int>());
+  resize(size);
+}
+
+template <typename T>
+Status Buffer<T>::reset(const T val) {
+  CHECK(data_ != nullptr) << ", null pointer, cannot reset.";
+  LOG(INFO) << "reset memory";
+  memset(data_, val, size_ * sizeof(T));
+  // this->allocator_->reset(data_, val, size_ * sizeof(T));
+  return Status::OK();
+}
 
 template class Buffer<float>;
 template class Buffer<int>;
+template class Buffer<long>;
 
 }  // namespace ace

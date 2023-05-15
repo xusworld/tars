@@ -17,7 +17,9 @@ class Tensor {
  public:
   // C++ type traits trick
   typedef typename DataTypeTraits<data_type>::value_type T;
-  typedef typename DataTypeTraits<data_type>::pointer TP;
+  typedef typename DataTypeTraits<data_type>::pointer TPtr;
+
+  Tensor() {}
 
   Tensor(const RuntimeType rtype = RuntimeType::CPU,
          const TensorShape &shape = TensorShape(),
@@ -29,7 +31,12 @@ class Tensor {
         valid_shape_(shape),
         dformat_(dformat),
         name_(name) {
-    buff_ = std::make_shared<Buffer<T>>(rtype, data_type, shape.size());
+    const int32_t elements =
+        std::accumulate(shape.begin(), shape.end(), 1, std::multiplies<int>());
+#ifdef ACE_DEBUG
+    LOG(INFO) << "DataType: " << data_type << " , elements: " << elements;
+#endif
+    buff_ = std::make_shared<Buffer<T>>(rtype, data_type, elements);
   }
 
   Tensor(const Tensor &tensor) {
@@ -40,6 +47,30 @@ class Tensor {
     dformat_ = tensor.dformat_;
     shared_ = tensor.shared_;
     buff_ = tensor.buff_;
+  }
+
+  Tensor(Tensor &&other) { *this = other; }
+
+  Tensor &operator=(Tensor &&other) {
+    shape_ = other.shape_;
+    valid_shape_ = other.valid_shape_;
+    offset_ = other.offset_;
+    dtype_ = other.dtype_;
+    dformat_ = other.dformat_;
+    shared_ = other.shared_;
+    buff_ = other.buff_;
+    return *this;
+  }
+
+  Tensor &operator=(Tensor &other) {
+    shape_ = other.shape_;
+    valid_shape_ = other.valid_shape_;
+    offset_ = other.offset_;
+    dtype_ = other.dtype_;
+    dformat_ = other.dformat_;
+    shared_ = other.shared_;
+    buff_ = other.buff_;
+    return *this;
   }
 
   ~Tensor() {
@@ -68,6 +99,14 @@ class Tensor {
   TensorShape mutable_shape() const { return shape_; }
   const TensorShape shape() const { return shape_; };
 
+  // return the data of the tensor
+  const T *data() const {
+    LOG(INFO) << "buff_.use_count(): " << buff_.use_count();
+    LOG(INFO) << "buff_.get() " << buff_.get();
+    return buff_.get()->data();
+  }
+  T *mutable_data() const { return buff_.get()->mutable_data(); }
+
   // returns the valid shape of the tensor
   TensorShape mutable_valid_shape() const { return valid_shape_; }
   const TensorShape valid_shape() const { return valid_shape_; };
@@ -89,7 +128,7 @@ class Tensor {
   Status reshape(const TensorShape &shape) { return Status::OK(); }
   Status reshape(const std::vector<int32_t> &dims) {
     if (!shared_) {
-      this->buff_.resize(dims);
+      this->buff_.get()->resize(dims);
       this->shape_ = dims;
       this->valid_shape_ = dims;
     } else {
@@ -98,15 +137,25 @@ class Tensor {
     return Status::OK();
   }
 
+  // reset memory
+  Status reset(const T val) {
+    LOG(INFO) << "reset val: " << val;
+    this->buff_.get()->reset(val);
+
+    return Status::OK();
+  }
+
   Status squeeze() { return Status::OK(); }
 
   Status clear() {
-    if (buff_->use_count() == 1) {
-      buff_.reset(nullptr);
+    if (buff_.use_count() == 1) {
+      // // release ownership
+      buff_.reset();
       this->name_ = "";
-      this->shape_ = {};
-      this->valid_shape_ = {};
-      this->offset = {};
+      // z
+      this->shape_ = TensorShape();
+      this->valid_shape_ = TensorShape();
+      this->offset_ = TensorShape();
     }
     return Status::OK();
   }
@@ -123,7 +172,7 @@ class Tensor {
           return Status::ERROR();
         }
 
-        buff_->realloc(shape_.size() * type_bytes);
+        buff_->reallocate(shape_.size() * type_bytes);
       }
     }
     return Status::OK();

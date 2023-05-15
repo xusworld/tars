@@ -9,17 +9,7 @@
 
 namespace ace {
 
-Status CudaAllocator::allocate(const DataType dtype, const int32_t size,
-                               void **ptr) {
-  const auto bytes = GetBufferBytes(dtype, size);
-  CUDA_CHECK(cudaMalloc(&ptr, bytes));
-  *ptr = reinterpret_cast<char *>(ptr);
-
-  CHECK(*ptr != NULL) << "malloc return a null pointer, please check";
-  return Status::OK();
-}
-
-Status CudaAllocator::allocate(const int32_t bytes, void **ptr) {
+Status CudaAllocator::allocate(void **ptr, const int32_t bytes) {
   CUDA_CHECK(cudaMalloc(&ptr, bytes));
   *ptr = reinterpret_cast<char *>(ptr);
 
@@ -45,8 +35,7 @@ CudaAllocator *CudaAllocator::get() {
   return alloc_;
 }
 
-Status CudaAllocator::reset(const DataType dtype, const size_t val,
-                            const int32_t bytes, void *ptr) {
+Status CudaAllocator::reset(void *ptr, const int32_t val, const int32_t size) {
   return Status::OK();
 }
 

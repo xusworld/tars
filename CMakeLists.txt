@@ -44,6 +44,8 @@ option(ACE_OPENMP "Use OpenMP" OFF)
 option(ACE_USE_SSE "Use SSE optimization for x86 if possiable" ON)
 option(ACE_AVX512 "Enable AVX512" OFF)
 
+option(ACE_DEBUG "Debug " ON)
+
 # Options for Nvidia gpus
 option(ACE_USE_CUDA "Enable CUDA" ON)
 option(ACE_USE_CUDNN "Enable CUDNN" OFF)

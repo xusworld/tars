@@ -13,15 +13,7 @@ namespace ace {
 
 #define X64_ALIGNED_BYTES 32
 
-Status CpuAllocator::allocate(const DataType dtype, const int32_t size,
-                              void **ptr) {
-  const auto bytes = GetBufferBytes(dtype, size);
-  *ptr = reinterpret_cast<void *>(_mm_malloc(bytes, X64_ALIGNED_BYTES));
-  CHECK(*ptr != NULL) << "malloc return a null pointer, please check";
-  return Status::OK();
-}
-
-Status CpuAllocator::allocate(const int32_t bytes, void **ptr) {
+Status CpuAllocator::allocate(void **ptr, const int32_t bytes) {
   *ptr = reinterpret_cast<void *>(_mm_malloc(bytes, X64_ALIGNED_BYTES));
   CHECK(*ptr != NULL) << "malloc return a null pointer, please check";
   return Status::OK();
@@ -49,9 +41,8 @@ Status async_memcpy(void *dst, size_t dst_offset, int dst_id, const void *src,
   return Status::OK();
 }
 
-Status CpuAllocator::reset(const DataType dtype, const size_t val,
-                           const int32_t bytes, void *ptr) {
-  memset(ptr, val, bytes);
+Status CpuAllocator::reset(void *ptr, const int32_t val, const int32_t size) {
+  memset(ptr, val, size);
 
   return Status::OK();
 }

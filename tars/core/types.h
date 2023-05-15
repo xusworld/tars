@@ -13,6 +13,14 @@ enum class MemcpyKind {
 
 enum class RuntimeType { CPU = 0, CUDA = 1 };
 
+// inline std::ostream& operator<<(std::ostream& os, RuntimeType& type) {
+//   if (type == RuntimeType::CPU) {
+//     os << "CPU";
+//   }
+
+//   return os;
+//}
+
 // returns the memcpy kind string
 std::string MemcpyKindToString(const MemcpyKind kind);
 

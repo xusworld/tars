@@ -39,11 +39,7 @@ class Buffer {
   Buffer(const RuntimeType rtype = RuntimeType::CPU,
          const DataType dtype = float32,  // use float as default data type
          const int32_t size = 0)
-      : rtype_(rtype),
-        dtype_(dtype),
-        size_(size),
-        capacity_(size),
-        shared_(false) {
+      : rtype_(rtype), dtype_(dtype), shared_(false) {
     CHECK_GT(size, 0) << "buffer size: " << size
                       << " <= 0, which is not a valid size.";
 
@@ -51,6 +47,7 @@ class Buffer {
     this->allocator_ = RuntimeTypeToAllocator(rtype);
     this->device_id_ = this->allocator_->device_id();
     auto status = this->reallocate(size);
+    LOG(INFO) << "init a new buffer";
   }
 
   Buffer(const Buffer& other) {
@@ -184,11 +181,15 @@ class Buffer {
   void reserve(size_t new_cap);
 
   // host memory resize
-  void resize(size_t new_size);
+  void resize(const std::vector<int32_t>& dims);
+  void resize(size_t size);
 
-  // reallocte memory space
+  // reallocte memory
   Status reallocate(const int32_t size);
   Status reallocate(const std::vector<int32_t>& dims);
+
+  // reset memory
+  Status reset(const T val);
 
  private:
   void init() {
@@ -208,7 +209,7 @@ class Buffer {
   // allocated storage
   int32_t capacity_ = 0;
   // buffer's underlying memory
-  T* data_;
+  T* data_ = nullptr;
   // buffer's device id, which device the buffer belongs to
   int32_t device_id_ = 0;
   // a flag, mark data_ in the buffer shared with other buffer or not

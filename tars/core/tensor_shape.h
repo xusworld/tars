@@ -102,15 +102,14 @@ class TensorShape : public Vector {
   static TensorShape minusone(const TensorShape& shape);
 };
 
-inline std::ostream& operator<<(std::ostream& out_stream, TensorShape& shape) {
-  out_stream << shape.debug_string();
-  return out_stream;
+inline std::ostream& operator<<(std::ostream& os, TensorShape& shape) {
+  os << shape.debug_string();
+  return os;
 }
 
-inline std::ostream& operator<<(std::ostream& out_stream,
-                                const TensorShape& shape) {
-  out_stream << shape.debug_string();
-  return out_stream;
+inline std::ostream& operator<<(std::ostream& os, const TensorShape& shape) {
+  os << shape.debug_string();
+  return os;
 }
 
 }  // namespace ace

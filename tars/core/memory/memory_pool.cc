@@ -7,7 +7,7 @@ template <RuntimeType rtype>
 Status MemoryPool<rtype>::acuqire(void** ptr, const int32_t bytes) {
   auto iter = free_blocks_.lower_bound(bytes);
   if (iter == free_blocks_.end()) {
-    CHECK_EQ(allocator_->allocate(bytes, ptr), Status::OK())
+    CHECK_EQ(allocator_->allocate(ptr, bytes), Status::OK())
         << "Malloc new memory failed, please check.";
     // mark as a used memory block
     used_blocks_.emplace(bytes, ptr);
