@@ -3,8 +3,7 @@
 #include "tars/core/macro.h"
 #include "tars/core/status.h"
 #include "tars/core/tensor.h"
-#include "tars/device/operator_impl.h"
-#include "tars/device/operator_param.h"
+#include "tars/device/op_context.h"
 #include "tars/ir/op_generated.h"
 #include "tars/ir/op_option_generated.h"
 #include "tars/ir/types_generated.h"
@@ -27,7 +26,7 @@ class Operator {
 
   virtual ~Operator() = default;
 
-  virtual Status init(const OpParam &op_param, Inputs inputs,
+  virtual Status init(const OpContext &op_param, Inputs inputs,
                       Outputs outputs) = 0;
 
   virtual Status invoke() = 0;
@@ -58,12 +57,11 @@ class Operator {
   std::string desc_;
   OpType op_type_;
   DataType dtype_;
-  OpParam op_param_;
+  OpContext op_param_;
   OpOption op_option_;
 
   Inputs inputs_;
   Outputs outputs_;
-  OperatorImpl<rtype, data_type> *impl_;
 };
 
 }  // namespace device

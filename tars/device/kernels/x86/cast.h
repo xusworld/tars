@@ -1,7 +1,11 @@
-#include "tars/device/impl/x86/elementwise_impl.h"
+
+#pragma once
+
+#include <iostream>
+#include <vector>
 
 namespace ace {
 namespace device {
-//
+namespace x86 {}
 }  // namespace device
 }  // namespace ace

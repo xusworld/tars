@@ -11,6 +11,7 @@ include(${CMAKE_CURRENT_LIST_DIR}/cmake/gflags.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/cmake/glog.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/cmake/protobuf.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/cmake/flatbuffers.cmake)
+include(${CMAKE_CURRENT_LIST_DIR}/cmake/xbyak.cmake)
 
 set(VERSION_MAJOR "0")
 set(VERSION_MINOR "1")
@@ -24,7 +25,7 @@ project(ACE VERSION ${VERSION} LANGUAGES C CXX ASM)
 
 # complier options
 set(CMAKE_C_STANDARD 99)
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_MODULE_PATH
   ${CMAKE_MODULE_PATH}
   "${CMAKE_CURRENT_LIST_DIR}/cmake"
@@ -42,6 +43,7 @@ option(ACE_DEBUG_TENSOR_SIZE "Enable Tensor Size" OFF)
 option(ACE_USE_ONEDNN "Enable oneDNN" OFF)
 option(ACE_OPENMP "Use OpenMP" OFF)
 option(ACE_USE_SSE "Use SSE optimization for x86 if possiable" ON)
+option(ACE_AVX2 "Enable AVX2" OFF)
 option(ACE_AVX512 "Enable AVX512" OFF)
 
 option(ACE_DEBUG "Debug " ON)
@@ -60,11 +62,12 @@ include_directories(${CMAKE_CURRENT_LIST_DIR}/include)
 include_directories(${CMAKE_CURRENT_LIST_DIR})
 include_directories(${CMAKE_CURRENT_LIST_DIR}/tars)
 include_directories(${CMAKE_CURRENT_LIST_DIR}/third-party)
+include_directories(${CMAKE_CURRENT_LIST_DIR}/third-party/vector)
 include_directories(${CMAKE_CURRENT_LIST_DIR}/third-party/flatbuffers/include)
 
 SET(CMAKE_BUILD_TYPE "Release")
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -rdynamic -ldl  -O3 -std=c++14 -m64 -mavx2 -mavx512f -mfma -fopenmp")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}  -rdynamic -ldl -O3 -std=c++14 -m64 -mavx2 -mavx512f -mfma -fopenmp -L/usr/local/cuda/lib64/ -lcudart")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -rdynamic -ldl  -O3 -std=c++17 -m64 -mavx2 -mavx512f -mfma -fopenmp")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}  -rdynamic -ldl -O3 -std=c++17 -m64 -mavx2 -mavx512f -mfma -fopenmp -L/usr/local/cuda/lib64/ -lcudart")
 
 
 add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/tars)

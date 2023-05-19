@@ -8,6 +8,17 @@
 #include "tars/device/ops/elementwise_op.h"
 #include "tars/ir/types_generated.h"
 
+// void Relu(float lhs) { std::cout << "Relu" << std::endl; }
+
+// void Selu(float lhs, float rhs) { std::cout << "Selu" << std::endl; }
+
+// template <typename Vec, typename... Args>
+// void func(Vec vec, Args... args) {
+//   using Func = void (*)(const Args... args);
+//   auto* fptr = (Func)Relu;
+//   (*fptr)(std::forward<Args>(args)...);
+// }
+
 int main() {
   // Elementwise Op test
   LOG(INFO) << "Elementwise Op test";
@@ -23,14 +34,14 @@ int main() {
 
   ace::Tensor<int32> out(ace::RuntimeType::CPU);
 
-  ace::device::OpParam op_param;
+  ace::device::OpContext op_param;
 
   auto inputs = std::vector<ace::Tensor<int32>*>({&in});
   auto outputs = std::vector<ace::Tensor<int32>*>({&out});
 
-  ace::device::ElementwiseOperator<ace::RuntimeType::CPU, int32> op;
-  op.init(op_param, inputs, outputs);
-  op.invoke();
+  ace::device::ReluOperator<ace::RuntimeType::CPU, int32> relu;
+  relu.init(op_param, inputs, outputs);
+  relu.invoke();
 
   auto data = out.data();
   LOG(INFO) << "Output: " << data[0];
