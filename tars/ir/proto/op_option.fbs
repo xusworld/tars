@@ -80,16 +80,23 @@ table AbsOption {
 }
 
 table BoundedReluOption {
-
+  threshold: float32; 
 }
 
 table ClipOption {
-
+  min: float32; 
+  max: float32; 
 }
 
 table ClipV2Option {
-
+  min: float32; 
+  max: float32;
 }
+
+table ClippedReluOption {
+  threshold: float32; 
+}
+
 
 table EluOption {
   alpha: float32 = 1.0;
@@ -104,11 +111,13 @@ table GeluTanhOption {
 }
 
 table HardSigmoidOption {
-
+  alpha: float32 = 1.0;
+  beta: float32 = 1.0;
 }
 
 table HardSwishOption {
-
+  shift: float32 = 1.0;
+  scale: float32 = 1.0;
 }
 
 table LinearOption {
@@ -124,11 +133,11 @@ table LogisticOption {
 }
 
 table MishOption {
-
+  scale: float32 = 1.0;
 }
 
 table PowOption {
-
+  n: int32 = 1; 
 }
 
 table PReluOption {
@@ -145,12 +154,8 @@ table Relu6Option {
  maxval:float = 6.0;
 }
 
-table ClippedReluOption {
-  threashod:float;
-}
-
 table LeakyReluOption {
-  negative_slope:float = 0.01;
+  alpha:float = 0.01;
 }
 
 table LogSigmoidOption {
@@ -158,7 +163,8 @@ table LogSigmoidOption {
 }
 
 table RoundOption {
-
+  min: float32; 
+  max: float32; 
 }
 
 table SeluOption {
@@ -170,7 +176,7 @@ table SigmoidOption {
 }
 
 table SoftReluOption {
-
+   threshold: float32; 
 } 
 
 
@@ -190,6 +196,8 @@ table SwishOption {
 
 
 table TanhOption {
+  min: float32; 
+  max: float32; 
 }
 
 

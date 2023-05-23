@@ -124,8 +124,15 @@ class Tensor {
   // returns the RuntimeType of the tensor
   RuntimeType rtype() const { return rtype_; }
 
+  // Make this tensor reuse other tensor's buffer.
+  // This tensor has the same dtype, shape and buffer shape.
+  // It could be reshaped later (with buffer shape unchanged).
+  void reuse_tensor(const Tensor &other) {
+    rtype_ = other.rtype_;
+    buff_ = other.buff_;
+  }
+
   // reshape the tensor
-  Status reshape(const TensorShape &shape) { return Status::OK(); }
   Status reshape(const std::vector<int32_t> &dims) {
     if (!shared_) {
       this->buff_.get()->resize(dims);
@@ -136,6 +143,9 @@ class Tensor {
     }
     return Status::OK();
   }
+
+  // resize the tensor
+  Status resize(const std::vector<int32_t> &dims) { return Status::OK(); }
 
   // reset memory
   Status reset(const T val) {

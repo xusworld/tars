@@ -41,7 +41,7 @@ int main() {
 
   ace::device::ReluOperator<ace::RuntimeType::CPU, int32> relu;
   relu.init(op_param, inputs, outputs);
-  relu.invoke();
+  relu.run();
 
   auto data = out.data();
   LOG(INFO) << "Output: " << data[0];

@@ -85,23 +85,17 @@ void SimdElementwiseExec(std::vector<float> &args, void *outputs_ptr,
     dst.store(outputs + i);
   }
 
-  // if (remainder > 0) {
-  //   float left_inputs[pack];
-  //   float left_outputs[pack];
-  //   memcpy(left_inputs, inputs, remainder * sizeof(float));
-  //   Vec left_src;
-  //   left_src.load(left_inputs);
-  //   Vec left_dst(func(left_src));
-  //   left_dst.store(left_outputs);
-  //   memcpy(outputs, left_outputs, remainder * sizeof(float));
-  // }
+  if (remainder > 0) {
+    float left_inputs[pack];
+    float left_outputs[pack];
+    memcpy(left_inputs, inputs, remainder * sizeof(float));
+    Vec left_src;
+    left_src.load(left_inputs);
+    Vec left_dst(func(left_src));
+    left_dst.store(left_outputs);
+    memcpy(outputs, left_outputs, remainder * sizeof(float));
+  }
 }
-
-// template void SimdElementwiseExec<x86::ElementwiseAbs<vector::Vec8f>,
-//                                   vector::Vec8f, 8>(std::vector<float> &args,
-//                                                     void *outputs_ptr,
-//                                                     void *inputs_ptr,
-//                                                     const int size);
 
 }  // namespace device
 }  // namespace ace

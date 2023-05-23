@@ -26,12 +26,11 @@ class Operator {
 
   virtual ~Operator() = default;
 
-  virtual Status init(const OpContext &op_param, Inputs inputs,
-                      Outputs outputs) = 0;
-
-  virtual Status invoke() = 0;
+  virtual Status init(const OpContext &ctx, Inputs inputs, Outputs outputs) = 0;
 
   virtual Status shape_infer() = 0;
+
+  virtual Status run() = 0;
 
   // returns the name of the operator
   std::string name() const { return ""; }
@@ -44,6 +43,12 @@ class Operator {
 
   // return the datatype of the operator
   DataType dtype() const { return dtype_; }
+
+  // return the inputs of the operator
+  Inputs inputs() const { return inputs_; }
+
+  // return the output of the operator
+  Outputs outputs() const { return outputs_; };
 
   // returns the inputs number of the operator
   int32_t inputs_num() const { return inputs_.size(); }
