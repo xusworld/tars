@@ -2,7 +2,7 @@
 
 #include "tars/core/allocator.h"
 
-namespace ace {
+namespace tars {
 
 class CudaAllocator : public Allocator {
  public:
@@ -26,4 +26,4 @@ class CudaAllocator : public Allocator {
   static CudaAllocator *alloc_;
 };
 
-}  // namespace ace
+}  // namespace tars

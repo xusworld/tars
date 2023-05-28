@@ -1,7 +1,7 @@
 #include "binary.cuh"
 
 
-namespace ace {
+namespace tars {
 namespace device {
 namespace cuda {
 

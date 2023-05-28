@@ -4,7 +4,7 @@
 
 #include "../allocator.h"
 
-namespace ace {
+namespace tars {
 
 class CpuAllocator : public Allocator {
  public:
@@ -26,4 +26,4 @@ class CpuAllocator : public Allocator {
   static CpuAllocator *alloc_;
 };
 
-}  // namespace ace
+}  // namespace tars

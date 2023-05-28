@@ -3,7 +3,7 @@
 #include <iostream>
 #include <vector>
 
-namespace ace {
+namespace tars {
 namespace device {
 namespace x86 {
 
@@ -86,4 +86,4 @@ void _avx2_tanh(float* outputs, float* inputs, const int32_t size,
 
 }  // namespace x86
 }  // namespace device
-}  // namespace ace
+}  // namespace tars

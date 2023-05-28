@@ -7,7 +7,7 @@
 
 #include "tars/core/memory/cuda_allocator.h"
 
-namespace ace {
+namespace tars {
 
 Status CudaAllocator::allocate(void **ptr, const int32_t bytes) {
   CUDA_CHECK(cudaMalloc(&ptr, bytes));
@@ -41,4 +41,4 @@ Status CudaAllocator::reset(void *ptr, const int32_t val, const int32_t size) {
 
 CudaAllocator *CudaAllocator::alloc_ = nullptr;
 
-}  // namespace ace
+}  // namespace tars

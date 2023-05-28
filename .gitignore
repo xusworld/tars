@@ -42,3 +42,4 @@ backup
 
 # Generated files
 tars/ir/*_generated.h
+ir/current/*_generated.h

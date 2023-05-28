@@ -5,7 +5,7 @@
 #include <string>
 #include <vector>
 
-namespace ace {
+namespace tars {
 
 inline void MakeStringInternal(std::stringstream & /*ss*/) {}
 
@@ -95,4 +95,4 @@ void StripString(std::string *s);
 std::string GetStrAfterPattern(const std::string &str,
                                const std::string &pattern);
 
-}  // namespace ace
+}  // namespace tars

@@ -10,7 +10,7 @@
 
 #include "string.h"
 
-namespace ace {
+namespace tars {
 
 std::ostream &FormatRow(std::ostream &stream, int width) {
   stream << std::right << std::setw(width);
@@ -155,4 +155,4 @@ std::string GetStrAfterPattern(const std::string &str,
   }
   return str.substr(pat_start, idx - pat_start);
 }
-}  // namespace ace
+}  // namespace tars

@@ -7,7 +7,7 @@
 #include "tars/core/status.h"
 #include "tars/core/types.h"
 
-namespace ace {
+namespace tars {
 
 // Runtime Interface, a pure class.
 // 1. memory
@@ -59,4 +59,4 @@ class Runtime {
   RuntimeType type_;
 };
 
-}  // namespace ace
+}  // namespace tars

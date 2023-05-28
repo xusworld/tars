@@ -3,8 +3,8 @@
 #include "tars/core/allocator.h"
 #include "tars/core/runtime.h"
 
-namespace ace {
+namespace tars {
 
 int32_t Allocator::device_id() const { return 0; }
 
-}  // namespace ace
+}  // namespace tars

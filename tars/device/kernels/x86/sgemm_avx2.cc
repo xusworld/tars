@@ -10,7 +10,7 @@
 #include "sgemm.h"
 #include "tars/core/utils.h"
 
-namespace ace {
+namespace tars {
 namespace device {
 namespace x86 {
 
@@ -721,4 +721,4 @@ void avx2_col_major_sgemm(int M, int N, int K, float alpha, float* A, int lda,
 
 }  // namespace x86
 }  // namespace device
-}  // namespace ace
+}  // namespace tars

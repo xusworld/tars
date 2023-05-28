@@ -2,41 +2,43 @@
 
 #include <memory>
 
+#include "ir/current/Type_generated.h"
 #include "tars/core/buffer.h"
 #include "tars/core/macro.h"
 #include "tars/core/tensor_shape.h"
 #include "tars/core/type_traits.h"
 #include "tars/core/types.h"
 #include "tars/core/utils.h"
-#include "tars/ir/types_generated.h"
 
-namespace ace {
+namespace tars {
 
-template <DataType data_type>
 class Tensor {
  public:
   // C++ type traits trick
-  typedef typename DataTypeTraits<data_type>::value_type T;
-  typedef typename DataTypeTraits<data_type>::pointer TPtr;
+  typedef typename DataTypeTraits<DataType_DT_FLOAT>::value_type T;
+  typedef typename DataTypeTraits<DataType_DT_FLOAT>::pointer TPtr;
 
-  Tensor() {}
+  Tensor() {
+    DLOG(INFO) << "default create a new Tensor.";
+    Tensor(RuntimeType::CPU, TensorShape(), DataFormat_NCHW, "");
+  }
 
-  Tensor(const RuntimeType rtype = RuntimeType::CPU,
-         const TensorShape &shape = TensorShape(),
+  Tensor(const RuntimeType rtype, const TensorShape &shape = TensorShape(),
          const DataFormat dformat = DataFormat_NCHW,
          const std::string &name = "")
       : rtype_(rtype),
-        dtype_(data_type),
+        dtype_(DataType_DT_FLOAT),
         shape_(shape),
         valid_shape_(shape),
         dformat_(dformat),
         name_(name) {
-    const int32_t elements =
-        std::accumulate(shape.begin(), shape.end(), 1, std::multiplies<int>());
-#ifdef ACE_DEBUG
-    LOG(INFO) << "DataType: " << data_type << " , elements: " << elements;
-#endif
-    buff_ = std::make_shared<Buffer<T>>(rtype, data_type, elements);
+    if (shape.size() > 0) {
+      const int32_t elements = std::accumulate(shape.begin(), shape.end(), 1,
+                                               std::multiplies<int>());
+      LOG(INFO) << "create a new buffer.";
+      buff_ = std::make_shared<Buffer<float>>(rtype, dtype_, elements);
+      CHECK(buff_ != nullptr) << "make buffer failed.";
+    }
   }
 
   Tensor(const Tensor &tensor) {
@@ -74,11 +76,15 @@ class Tensor {
   }
 
   ~Tensor() {
-    LOG(INFO) << "shared: " << shared_ << " , use_count: " << buff_.use_count();
+    LOG(INFO) << "~Tensor: shared: " << shared_
+              << " , use_count: " << buff_.use_count();
     if (!shared_ && buff_.use_count() == 1) {
-      // buff_.reset(nullptr);
+      // buff_.reset(nul);
     }
   }
+
+  // return device id of the tensor
+  int32_t device_id() const { return 0; }
 
   // returns true if the tensor is empty (or uninitialized)
   bool empty() const noexcept { return shape_.size() == 0; }
@@ -95,26 +101,6 @@ class Tensor {
   // returns the rank of the tensor
   int32_t rank() const { return shape_.dims(); };
 
-  // returns the shape of the tensor
-  TensorShape mutable_shape() const { return shape_; }
-  const TensorShape shape() const { return shape_; };
-
-  // return the data of the tensor
-  const T *data() const {
-    LOG(INFO) << "buff_.use_count(): " << buff_.use_count();
-    LOG(INFO) << "buff_.get() " << buff_.get();
-    return buff_.get()->data();
-  }
-  T *mutable_data() const { return buff_.get()->mutable_data(); }
-
-  // returns the valid shape of the tensor
-  TensorShape mutable_valid_shape() const { return valid_shape_; }
-  const TensorShape valid_shape() const { return valid_shape_; };
-
-  // returns the offset of the tensor
-  TensorShape mutable_offset() const { return offset_; }
-  const TensorShape offset() const { return offset_; };
-
   // returns the DataType of the tensor
   DataType dtype() const { return dtype_; }
 
@@ -123,6 +109,46 @@ class Tensor {
 
   // returns the RuntimeType of the tensor
   RuntimeType rtype() const { return rtype_; }
+
+  // returns batch size of the tensor
+  int32_t batch() const;
+
+  // returns channel of the tensor
+  int32_t channel() const;
+
+  // returns height of the tensor
+  int32_t height() const;
+
+  // returns width of the tensor
+  int32_t width() const;
+
+  // return the data of the tensor
+  const T *data() const {
+    LOG(INFO) << "buff_.use_count(): " << buff_.use_count();
+    LOG(INFO) << "buff_.get() " << buff_.get();
+    return buff_.get()->data();
+  }
+
+  // return the data of the tensor
+  T *mutable_data() const { return buff_.get()->mutable_data(); }
+
+  // returns the shape of the tensor
+  TensorShape mutable_shape() const { return shape_; }
+
+  // returns the shape of the tensor
+  const TensorShape shape() const { return shape_; };
+
+  // returns the valid shape of the tensor
+  TensorShape mutable_valid_shape() const { return valid_shape_; }
+
+  // returns the valid shape of the tensor
+  const TensorShape valid_shape() const { return valid_shape_; };
+
+  // returns the offset of the tensor
+  TensorShape mutable_offset() const { return offset_; }
+
+  // returns the offset of the tensor
+  const TensorShape offset() const { return offset_; };
 
   // Make this tensor reuse other tensor's buffer.
   // This tensor has the same dtype, shape and buffer shape.
@@ -135,12 +161,20 @@ class Tensor {
   // reshape the tensor
   Status reshape(const std::vector<int32_t> &dims) {
     if (!shared_) {
-      this->buff_.get()->resize(dims);
-      this->shape_ = dims;
-      this->valid_shape_ = dims;
+      if (buff_) {
+      } else {
+        auto shape = TensorShape(dims);
+        CHECK(shape.elems() > 0) << "shape value error: " << shape;
+        buff_ = std::make_shared<Buffer<float>>(rtype_, dtype_, shape.elems());
+        this->buff_.get()->resize(dims);
+        this->shape_ = dims;
+        this->valid_shape_ = dims;
+      }
+
     } else {
-      LOG(INFO) << "a shard tensor, cannot resize, please check";
+      LOG(INFO) << "a shared tensor, cannot resize, please check";
     }
+    LOG(INFO) << "reshape done.";
     return Status::OK();
   }
 
@@ -188,9 +222,20 @@ class Tensor {
     return Status::OK();
   }
 
+  Status set_dformat(const DataFormat dformat) {
+    dformat_ = dformat;
+    return Status::OK();
+  }
+
+  void set_kind(const TensorKind kind) { kind_ = kind; }
+
+  std::string DebugString();
+
  private:
   // tensor's name
   std::string name_;
+  // tensor's kind
+  TensorKind kind_;
   // tensor's runtime type
   RuntimeType rtype_;
   // tensor's data type
@@ -204,9 +249,9 @@ class Tensor {
   // Represent the offset idx between _shape and _real_shape.
   TensorShape offset_;
   // tensor's buffer
-  std::shared_ptr<Buffer<T>> buff_;
+  std::shared_ptr<Buffer<float>> buff_;
 
   bool shared_ = false;
 };
 
-}  // namespace ace
+}  // namespace tars

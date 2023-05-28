@@ -1,6 +1,6 @@
 #pragma once
 
-namespace ace {
+namespace tars {
 namespace device {
 namespace x86 {
 
@@ -53,4 +53,4 @@ void StrassenGemm(float* A, float* B, float* C, const int M, const int N,
 
 }  // namespace x86
 }  // namespace device
-}  // namespace ace
+}  // namespace tars

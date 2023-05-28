@@ -3,22 +3,26 @@
 #include <glog/logging.h>
 
 #include <cstdint>
+#include <functional>
 #include <iostream>
 #include <iterator>
+#include <numeric>
 #include <vector>
 
 #include "tars/core/utils.h"
 #include "tars/ir/types_generated.h"
 
-namespace ace {
+namespace tars {
 
 namespace {
+
 using Vector = std::vector<int32_t>;
-}
+
+}  // namespace
 
 class TensorShape : public Vector {
  public:
-  TensorShape() = default;
+  TensorShape() {}
 
   TensorShape(const std::vector<int32_t>& dims) {
     this->assign(dims.begin(), dims.end());
@@ -36,6 +40,15 @@ class TensorShape : public Vector {
   TensorShape& operator=(const TensorShape& shape);
   TensorShape operator+(const TensorShape& shape);
   TensorShape operator-(const TensorShape& shape);
+
+  int32_t& operator[](const int i) {
+    if (i >= this->size()) {
+      this->resize(i + 1);
+    }
+    return this->at(i);
+  }
+
+  const int32_t& operator[](const int i) const { return this->at(i); }
 
   bool operator<(const TensorShape& shape) const;
   bool operator<=(const TensorShape& shape) const;
@@ -112,4 +125,4 @@ inline std::ostream& operator<<(std::ostream& os, const TensorShape& shape) {
   return os;
 }
 
-}  // namespace ace
+}  // namespace tars

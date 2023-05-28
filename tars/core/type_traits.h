@@ -4,11 +4,11 @@
 #include <type_traits>
 #include <utility>
 
+#include "ir/current/Type_generated.h"
 #include "tars/core/macro.h"
 #include "tars/core/status.h"
-#include "tars/ir/types_generated.h"
 
-namespace ace {
+namespace tars {
 
 // template <size_t index, typename Arg, typename... Args>
 // struct ParamPackType;
@@ -170,7 +170,7 @@ struct DataTypeTraits {
 };
 
 template <>
-struct DataTypeTraits<int8> {
+struct DataTypeTraits<DataType_DT_INT8> {
   typedef int8_t value_type;
   typedef int8_t& reference;
   typedef const int8_t& const_reference;
@@ -179,7 +179,7 @@ struct DataTypeTraits<int8> {
 };
 
 template <>
-struct DataTypeTraits<int16> {
+struct DataTypeTraits<DataType_DT_INT16> {
   typedef int16_t value_type;
   typedef int16_t& reference;
   typedef const int16_t& const_reference;
@@ -188,7 +188,7 @@ struct DataTypeTraits<int16> {
 };
 
 template <>
-struct DataTypeTraits<int32> {
+struct DataTypeTraits<DataType_DT_INT32> {
   typedef int32_t value_type;
   typedef int32_t& reference;
   typedef const int32_t& const_reference;
@@ -197,7 +197,7 @@ struct DataTypeTraits<int32> {
 };
 
 template <>
-struct DataTypeTraits<int64> {
+struct DataTypeTraits<DataType_DT_INT64> {
   typedef int64_t value_type;
   typedef int64_t& reference;
   typedef const int64_t& const_reference;
@@ -206,7 +206,7 @@ struct DataTypeTraits<int64> {
 };
 
 template <>
-struct DataTypeTraits<uint8> {
+struct DataTypeTraits<DataType_DT_UINT8> {
   typedef uint8_t value_type;
   typedef uint8_t& reference;
   typedef const uint8_t& const_reference;
@@ -215,7 +215,7 @@ struct DataTypeTraits<uint8> {
 };
 
 template <>
-struct DataTypeTraits<uint16> {
+struct DataTypeTraits<DataType_DT_UINT16> {
   typedef uint16_t value_type;
   typedef uint16_t& reference;
   typedef const uint16_t& const_reference;
@@ -223,26 +223,26 @@ struct DataTypeTraits<uint16> {
   typedef const value_type* const_pointer;
 };
 
-template <>
-struct DataTypeTraits<uint32> {
-  typedef uint32_t value_type;
-  typedef uint32_t& reference;
-  typedef const uint32_t& const_reference;
-  typedef value_type* pointer;
-  typedef const value_type* const_pointer;
-};
+// template <>
+// struct DataTypeTraits<DataType_DT_UINT32> {
+//   typedef uint32_t value_type;
+//   typedef uint32_t& reference;
+//   typedef const uint32_t& const_reference;
+//   typedef value_type* pointer;
+//   typedef const value_type* const_pointer;
+// };
+
+// template <>
+// struct DataTypeTraits<DataType_DT_UINT64> {
+//   typedef uint64_t value_type;
+//   typedef uint64_t& reference;
+//   typedef const uint64_t& const_reference;
+//   typedef value_type* pointer;
+//   typedef const value_type* const_pointer;
+// };
 
 template <>
-struct DataTypeTraits<uint64> {
-  typedef uint64_t value_type;
-  typedef uint64_t& reference;
-  typedef const uint64_t& const_reference;
-  typedef value_type* pointer;
-  typedef const value_type* const_pointer;
-};
-
-template <>
-struct DataTypeTraits<float32> {
+struct DataTypeTraits<DataType_DT_FLOAT> {
   typedef float value_type;
   typedef float& reference;
   typedef const float& const_reference;
@@ -250,4 +250,4 @@ struct DataTypeTraits<float32> {
   typedef const value_type* const_pointer;
 };
 
-}  // namespace ace
+}  // namespace tars

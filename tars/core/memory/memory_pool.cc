@@ -1,7 +1,7 @@
 #include "glog/logging.h"
 #include "tars/core/memory/memory_pool.h"
 
-namespace ace {
+namespace tars {
 
 template <RuntimeType rtype>
 Status MemoryPool<rtype>::acuqire(void** ptr, const int32_t bytes) {
@@ -61,4 +61,4 @@ Status MemoryPool<rtype>::clear() {
   return Status::OK();
 }
 
-}  // namespace ace
+}  // namespace tars

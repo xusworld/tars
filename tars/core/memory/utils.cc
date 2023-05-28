@@ -1,6 +1,6 @@
 #include "tars/core/memory/utils.h"
 
-namespace ace {
+namespace tars {
 namespace cuda {
 
 template <typename T>
@@ -28,4 +28,4 @@ void CopyH2H(T* dst, const T* src, size_t n, cudaStream_t stream) {
 }
 
 }  // namespace cuda
-}  // namespace ace
+}  // namespace tars

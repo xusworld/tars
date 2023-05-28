@@ -2,7 +2,7 @@ include "types.fbs";
 include "tensor.fbs";
 include "op.fbs";
 
-namespace ace;
+namespace tars;
 
 
 table Version {

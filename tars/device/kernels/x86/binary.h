@@ -3,7 +3,7 @@
 #include <iostream>
 #include <vector>
 
-namespace ace {
+namespace tars {
 namespace device {
 namespace x86 {
 
@@ -57,4 +57,4 @@ void _naive_binary_not_equal(bool* outputs, const T* lhs, const T* rhs,
 
 }  // namespace x86
 }  // namespace device
-}  // namespace ace
+}  // namespace tars

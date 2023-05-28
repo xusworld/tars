@@ -2,7 +2,7 @@
 #include <cuda_runtime.h>
 
 
-namespace ace {
+namespace tars {
 namespace device {
 namespace cuda {
 

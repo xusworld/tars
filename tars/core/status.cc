@@ -1,3 +1,3 @@
 #include "tars/core/status.h"
 
-namespace ace {}  // namespace ace
+namespace tars {}  // namespace tars

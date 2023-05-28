@@ -9,7 +9,7 @@
 #include "tars/core/status.h"
 #include "tars/core/types.h"
 
-namespace ace {
+namespace tars {
 
 class MemoryManager {
  public:
@@ -131,4 +131,4 @@ class MemoryPool {
   Allocator* allocator_;
 };
 
-}  // namespace ace
+}  // namespace tars

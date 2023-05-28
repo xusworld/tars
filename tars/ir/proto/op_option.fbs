@@ -1,7 +1,7 @@
 include "types.fbs";
 include "tensor.fbs";
 
-namespace ace;
+namespace tars;
 
 // Operators List
 //

@@ -6,7 +6,7 @@
 #include <immintrin.h>
 #endif
 
-namespace ace {
+namespace tars {
 namespace device {
 namespace x86 {
 
@@ -78,4 +78,4 @@ inline float _m256_max_array(const float* in, int length) {
 
 }  // namespace x86
 }  // namespace device
-}  // namespace ace
+}  // namespace tars

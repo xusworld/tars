@@ -6,7 +6,7 @@
 
 #include "sse_mathfun.h"
 
-namespace ace {
+namespace tars {
 namespace device {
 namespace x86 {
 
@@ -233,4 +233,4 @@ struct Vec4fx4 {
 
 }  // namespace x86
 }  // namespace device
-}  // namespace ace
+}  // namespace tars

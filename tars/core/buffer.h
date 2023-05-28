@@ -13,10 +13,8 @@
 #include "tars/core/tensor_shape.h"
 #include "tars/core/type_traits.h"
 #include "tars/core/types.h"
-#include "tars/ir/op_option_generated.h"
-#include "tars/ir/types_generated.h"
 
-namespace ace {
+namespace tars {
 
 namespace {
 
@@ -37,14 +35,14 @@ template <typename T>
 class Buffer {
  public:
   Buffer(const RuntimeType rtype = RuntimeType::CPU,
-         const DataType dtype = float32,  // use float as default data type
-         const int32_t size = 0)
+         const DataType dtype = DataType_DT_FLOAT, const int32_t size = 0)
       : rtype_(rtype), dtype_(dtype), shared_(false) {
     CHECK_GT(size, 0) << "buffer size: " << size
                       << " <= 0, which is not a valid size.";
 
     // allocate a new memory space, so buffer will be a unshared buffer
-    this->allocator_ = RuntimeTypeToAllocator(rtype);
+    // LOG(INFO) << "Buffer runtime type: " << RuntimeTypeToString(rtype);
+    this->allocator_ = RuntimeTypeToAllocator(RuntimeType::CPU);
     this->device_id_ = this->allocator_->device_id();
     auto status = this->reallocate(size);
     LOG(INFO) << "init a new buffer";
@@ -216,4 +214,4 @@ class Buffer {
   bool shared_ = false;
 };
 
-}  // namespace ace
+}  // namespace tars

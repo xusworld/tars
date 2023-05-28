@@ -4,7 +4,7 @@
 #include "tars/ir/op_generated.h"
 #include "tars/ir/op_option_generated.h"
 
-namespace ace {
+namespace tars {
 namespace device {
 
 struct OpContext {
@@ -14,4 +14,4 @@ struct OpContext {
 };
 
 }  // namespace device
-}  // namespace ace
+}  // namespace tars

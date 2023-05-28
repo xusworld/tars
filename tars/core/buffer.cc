@@ -3,7 +3,7 @@
 #include "tars/core/buffer.h"
 #include "tars/core/status.h"
 
-namespace ace {
+namespace tars {
 
 template <typename T>
 Status Buffer<T>::reallocate(const int32_t size) {
@@ -63,6 +63,7 @@ void Buffer<T>::reserve(size_t new_cap) {
 // host memory resize
 template <typename T>
 void Buffer<T>::resize(size_t new_size) {
+  DLOG(INFO) << "buffer size: " << new_size << " , capacity: " << capacity_;
   if (new_size > capacity_) {
     size_t new_cap = 2 * capacity_;
     if (new_size > new_cap) new_cap = new_size;
@@ -75,6 +76,7 @@ template <typename T>
 void Buffer<T>::resize(const std::vector<int32_t> &dims) {
   const int32_t size =
       std::accumulate(dims.begin(), dims.end(), 1, std::multiplies<int>());
+
   resize(size);
 }
 
@@ -91,4 +93,4 @@ template class Buffer<float>;
 template class Buffer<int>;
 template class Buffer<long>;
 
-}  // namespace ace
+}  // namespace tars

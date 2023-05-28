@@ -1,8 +1,9 @@
 #pragma once
 
+#include "ir/current/Type_generated.h"
 #include "tars/core/macro.h"
 
-namespace ace {
+namespace tars {
 
 // DataType to bytes.
 int DataType2Bytes(const DataType dtype);
@@ -46,4 +47,4 @@ inline T DivUp(T n, T div) {
 #define ABS(x) ((x) > (0) ? (x) : (-(x)))
 #endif
 
-}  // namespace ace
+}  // namespace tars

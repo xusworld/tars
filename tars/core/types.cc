@@ -1,6 +1,6 @@
 #include "tars/core/types.h"
 
-namespace ace {
+namespace tars {
 
 inline std::string MemcpyKindToString(const MemcpyKind kind) {
   switch (kind) {
@@ -27,4 +27,4 @@ inline std::string RuntimeTypeToString(const RuntimeType type) {
       return "Runtime unknown";
   }
 }
-}  // namespace ace
+}  // namespace tars

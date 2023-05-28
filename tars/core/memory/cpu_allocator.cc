@@ -9,7 +9,7 @@
 #include "tars/core/status.h"
 #include "tars/core/utils.h"
 
-namespace ace {
+namespace tars {
 
 #define X64_ALIGNED_BYTES 32
 
@@ -57,4 +57,4 @@ CpuAllocator *CpuAllocator::get() {
 
 CpuAllocator *CpuAllocator::alloc_ = nullptr;
 
-}  // namespace ace
+}  // namespace tars

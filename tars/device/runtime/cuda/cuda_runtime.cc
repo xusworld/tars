@@ -2,7 +2,7 @@
 #include "tars/core/status.h"
 #include "tars/device/runtime/cuda_runtime.h"
 
-namespace ace {
+namespace tars {
 namespace device {
 
 Status CudaRuntime::acuqire(void** ptr, const int32_t size) {
@@ -103,4 +103,4 @@ Status CudaRuntime::sync_stream(Stream stream) {
   return Status::OK();
 }
 }  // namespace device
-}  // namespace ace
+}  // namespace tars

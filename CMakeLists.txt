@@ -3,6 +3,10 @@ cmake_minimum_required(VERSION 3.0)
 # third party path
 set(ACE_ROOT ${CMAKE_CURRENT_LIST_DIR})
 
+set (CMAKE_C_COMPILER "/usr/bin/gcc")
+set (CMAKE_CXX_COMPILER "/usr/bin/g++")
+
+
 message(STATUS "Ace v2 root dir: " ${ACE_ROOT})
 set(ACE_THIRD_PARTY_PATH ${ACE_ROOT}/third-party)
 set(ACE_BUILD_THIRD_PARTY_PATH ${CMAKE_BINARY_DIR}/third-party)
@@ -61,13 +65,14 @@ endif()
 include_directories(${CMAKE_CURRENT_LIST_DIR}/include)
 include_directories(${CMAKE_CURRENT_LIST_DIR})
 include_directories(${CMAKE_CURRENT_LIST_DIR}/tars)
+include_directories(${CMAKE_CURRENT_LIST_DIR}/ir)
 include_directories(${CMAKE_CURRENT_LIST_DIR}/third-party)
 include_directories(${CMAKE_CURRENT_LIST_DIR}/third-party/vector)
 include_directories(${CMAKE_CURRENT_LIST_DIR}/third-party/flatbuffers/include)
 
-SET(CMAKE_BUILD_TYPE "Release")
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -rdynamic -ldl  -O3 -std=c++17 -m64 -mavx2 -mavx512f -mfma -fopenmp")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}  -rdynamic -ldl -O3 -std=c++17 -m64 -mavx2 -mavx512f -mfma -fopenmp -L/usr/local/cuda/lib64/ -lcudart")
+SET(CMAKE_BUILD_TYPE "Debug")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -rdynamic -ldl  -g3 -std=c++17 -m64 -mavx2 -mavx512f -mfma -fopenmp")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}  -rdynamic -ldl -g3 -std=c++17 -m64 -mavx2 -mavx512f -mfma -fopenmp -L/usr/local/cuda/lib64/ -lcudart")
 
 
 add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/tars)

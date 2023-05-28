@@ -1,7 +1,7 @@
 #include "glog/logging.h"
 #include "thread_pool.h"
 
-namespace ace {
+namespace tars {
 
 inline void ThreadPool::launch() {
   for (size_t i = 0; i < num_thread_; ++i) {
@@ -80,4 +80,4 @@ ThreadPool::RunAsync(functor function, ParamTypes... args)
   this->cv_.notify_one();
   return result;
 }
-}  // namespace ace
+}  // namespace tars

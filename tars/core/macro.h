@@ -15,19 +15,19 @@
 #include "tars/ir/types_generated.h"
 
 // type alias, refer tars/ir/proto/types.fbs
-enum DataType : int8_t {
-  none = 0,
-  int8 = 1,
-  int16 = 2,
-  int32 = 3,
-  int64 = 4,
-  uint8 = 5,
-  uint16 = 6,
-  uint32 = 7,
-  uint64 = 8,
-  float16 = 9,
-  float32 = 10
-};
+// enum DataType : int8_t {
+//   none = 0,
+//   int8 = 1,
+//   int16 = 2,
+//   int32 = 3,
+//   int64 = 4,
+//   uint8 = 5,
+//   uint16 = 6,
+//   uint32 = 7,
+//   uint64 = 8,
+//   float16 = 9,
+//   float32 = 10
+// };
 
 // Helper to delete copy constructor & copy-assignment operator
 #define DISABLE_COPY_MOVE_ASSIGN(name)   \

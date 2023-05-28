@@ -1,6 +1,6 @@
 include "types.fbs";
 
-namespace ace;
+namespace tars;
 
 table CacheDataProto {
   u: [uint8];    // uint8   array

@@ -6,7 +6,7 @@
 
 #include "avx2_funcs.h"
 
-namespace ace {
+namespace tars {
 namespace device {
 namespace x86 {
 
@@ -663,4 +663,4 @@ static void conv_x86_winograd3x3_avx2_opt(
 
 }  // namespace x86
 }  // namespace device
-}  // namespace ace
+}  // namespace tars

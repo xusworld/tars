@@ -1,7 +1,7 @@
 #include "tars/device/kernels/x86/elementwise.h"
 #include "tars/device/ops/elementwise_op.h"
 
-namespace ace {
+namespace tars {
 namespace device {
 
 std::string ElementwiseOpTypeToString(OpType type) {
@@ -98,4 +98,4 @@ void SimdElementwiseExec(std::vector<float> &args, void *outputs_ptr,
 }
 
 }  // namespace device
-}  // namespace ace
+}  // namespace tars

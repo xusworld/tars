@@ -1,7 +1,7 @@
 
 #include "utils.h"
 
-namespace ace {
+namespace tars {
 namespace device {
 namespace cuda {
 

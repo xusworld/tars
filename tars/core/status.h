@@ -2,7 +2,7 @@
 
 #include <string>
 
-namespace ace {
+namespace tars {
 
 enum class ErrorCode {
   SUCCESS = 0,
@@ -84,4 +84,4 @@ inline Status& Status::operator=(const Status&& status) {
   return *(this);
 }
 
-}  // namespace ace
+}  // namespace tars

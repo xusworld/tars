@@ -11,7 +11,7 @@
 #include "vectormath_exp.h"
 #include "vectormath_trig.h"
 
-namespace ace {
+namespace tars {
 namespace device {
 namespace x86 {
 
@@ -93,4 +93,4 @@ void avx2_vector_mul(const float* in_0, const float* in_1, const int len,
 
 }  // namespace x86
 }  // namespace device
-}  // namespace ace
+}  // namespace tars

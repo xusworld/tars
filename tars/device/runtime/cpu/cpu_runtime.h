@@ -5,7 +5,7 @@
 #include "tars/core/thread/thread_pool.h"
 #include "tars/ir/types_generated.h"
 
-namespace ace {
+namespace tars {
 namespace device {
 
 class CpuRuntime : public Runtime {
@@ -63,4 +63,4 @@ class CpuRuntime : public Runtime {
 };
 
 }  // namespace device
-}  // namespace ace
+}  // namespace tars

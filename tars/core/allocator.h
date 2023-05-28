@@ -11,7 +11,7 @@
 #include "tars/core/tensor_shape.h"
 #include "tars/core/types.h"
 
-namespace ace {
+namespace tars {
 
 // Allocator Inferface, a pure virtual class.
 class Allocator {
@@ -32,4 +32,4 @@ class Allocator {
   virtual RuntimeType runtime_type() const = 0;
 };
 
-}  // namespace ace
+}  // namespace tars

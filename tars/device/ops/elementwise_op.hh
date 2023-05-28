@@ -6,7 +6,7 @@
 #include "tars/ir/op_option_generated.h"
 #include "tars/ir/types_generated.h"
 
-namespace ace {
+namespace tars {
 namespace device {
 
 template <RuntimeType rtype, DataType dtype>
@@ -185,4 +185,4 @@ DEFINE_ELEMENTWISE_OP(Swish, OpType_Swish);
 DEFINE_ELEMENTWISE_OP(Tanh, OpType_Tanh);
 
 }  // namespace device
-}  // namespace ace
+}  // namespace tars

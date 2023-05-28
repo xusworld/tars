@@ -6,7 +6,7 @@
 
 #include "avx2_funcs.h"
 
-namespace ace {
+namespace tars {
 namespace device {
 namespace x86 {
 
@@ -124,4 +124,4 @@ static void winograd_transform_weights_oc_ic_64(float* dout, const float* din,
 
 }  // namespace x86
 }  // namespace device
-}  // namespace ace
+}  // namespace tars

@@ -5,7 +5,7 @@
 #include "tars/ir/op_option_generated.h"
 #include "tars/ir/types_generated.h"
 
-namespace ace {
+namespace tars {
 namespace device {
 
 template <RuntimeType rtype, DataType dtype>
@@ -65,4 +65,4 @@ class PoolOp : public Operator<rtype, dtype> {
 };
 
 }  // namespace device
-}  // namespace ace
+}  // namespace tars

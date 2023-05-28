@@ -1,6 +1,6 @@
 #include "softmax.h"
 
-namespace ace {
+namespace tars {
 namespace device {
 namespace x86 {
 
@@ -8,4 +8,4 @@ namespace x86 {
 
 }  // namespace x86
 }  // namespace device
-}  // namespace ace
+}  // namespace tars

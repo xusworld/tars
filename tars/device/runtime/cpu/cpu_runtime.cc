@@ -1,6 +1,6 @@
 #include "tars/device/cpu_runtime.h"
 
-namespace ace {
+namespace tars {
 namespace device {
 
 const int MALLOC_ALIGN = 64;
@@ -92,4 +92,4 @@ Status CpuRuntime::sync_stream(Event event, Stream stream) {
 Status CpuRuntime::sync_stream(Stream stream) { return Status::OK(); }
 
 }  // namespace device
-}  // namespace ace
+}  // namespace tars

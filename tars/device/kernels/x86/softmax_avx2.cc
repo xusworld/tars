@@ -8,7 +8,7 @@
 
 #include "avx2_funcs.h"
 
-namespace ace {
+namespace tars {
 namespace device {
 namespace x86 {
 
@@ -187,4 +187,4 @@ void avx2_sequence_softmax(const float* data, std::vector<int>& seq_offset,
 
 }  // namespace x86
 }  // namespace device
-}  // namespace ace
+}  // namespace tars

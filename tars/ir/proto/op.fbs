@@ -3,7 +3,7 @@ include "tensor.fbs";
 include "op_option.fbs";
 
 
-namespace ace;
+namespace tars;
 
 enum OpType : int {
   Default = 0,

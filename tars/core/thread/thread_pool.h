@@ -12,7 +12,7 @@
 #include "tars/core/thread_safe_macros.h"
 #include "tars/core/type_traits.h"
 
-namespace ace {
+namespace tars {
 
 class ThreadPool {
   using Task = std::function<void(void)>;
@@ -56,4 +56,4 @@ class ThreadPool {
   bool stop_ = false;
 };
 
-}  // namespace ace
+}  // namespace tars

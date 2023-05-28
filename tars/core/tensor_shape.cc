@@ -2,7 +2,7 @@
 
 #include "tars/core/tensor_shape.h"
 
-namespace ace {
+namespace tars {
 
 TensorShape& TensorShape::operator=(const TensorShape& right) {
   this->assign(right.begin(), right.end());
@@ -136,4 +136,4 @@ std::string TensorShape::debug_string() const {
   return ss.str();
 }
 
-}  // namespace ace
+}  // namespace tars

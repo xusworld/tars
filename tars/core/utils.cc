@@ -3,7 +3,7 @@
 
 #include "tars/core/utils.h"
 
-namespace ace {
+namespace tars {
 
 // inline int DataType2Bytes(const DataType dtype) {
 //   switch (dtype) {
@@ -39,27 +39,27 @@ namespace ace {
 
 int DataType2Bytes(const DataType dtype) {
   switch (dtype) {
-    case none:
-      return 0;
-    case int8:
-      return 1;
-    case int16:
-      return 2;
-    case int32:
-      return 4;
-    case int64:
-      return 8;
-    case uint8:
-      return 1;
-    case uint16:
-      return 2;
-    case uint32:
-      return 4;
-    case uint64:
-      return 8;
-    case float16:
-      return 2;
-    case float32:
+    // case none:
+    //   return 0;
+    // case int8:
+    //   return 1;
+    // case int16:
+    //   return 2;
+    // case int32:
+    //   return 4;
+    // case int64:
+    //   return 8;
+    // case uint8:
+    //   return 1;
+    // case uint16:
+    //   return 2;
+    // case uint32:
+    //   return 4;
+    // case uint64:
+    //   return 8;
+    // case DataType_DT_FLOAT:
+    //   return 2;
+    case DataType_DT_FLOAT:
       return 4;
       // case DataType_FLOAT_64:
       //   return 8;
@@ -111,4 +111,4 @@ int32_t GetBufferBytes(const DataType dtype, const std::vector<int32_t>& dims) {
   return size * DataType2Bytes(dtype);
 }
 
-}  // namespace ace
+}  // namespace tars

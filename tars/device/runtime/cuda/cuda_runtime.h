@@ -2,7 +2,7 @@
 
 #include "tars/core/runtime.h"
 
-namespace ace {
+namespace tars {
 namespace device {
 
 class CudaRuntime : public Runtime {
@@ -56,4 +56,4 @@ class CudaRuntime : public Runtime {
 };
 
 }  // namespace device
-}  // namespace ace
+}  // namespace tars
