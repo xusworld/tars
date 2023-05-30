@@ -22,6 +22,8 @@ file(GLOB SHAPE_SRC ${CMAKE_CURRENT_LIST_DIR}/shape/*.cc)
 file(GLOB UTILS_SRC ${CMAKE_CURRENT_LIST_DIR}/utils/*.cc)
 list(APPEND CORE_SRC ${CMAKE_CURRENT_LIST_DIR}/core/interpreter.cc)
 
+
+
 #file(GLOB DEVICE_SRC ${CMAKE_CURRENT_LIST_DIR}/device/*.cc)
 #file(GLOB DEVICE_OP_SRC ${CMAKE_CURRENT_LIST_DIR}/device/ops/*.cc)
 #file(GLOB DEVICE_OP_IMPL_SRC ${CMAKE_CURRENT_LIST_DIR}/device/ops/*.cc )
@@ -42,3 +44,8 @@ target_link_libraries(acecore -lglog)
 # add_executable(test_buffer ${CMAKE_CURRENT_LIST_DIR}/test/buffer_test.cc ${ALL_SRC})
 # target_link_libraries(test_buffer -Wl,--whole-archive  -lpthread -Wl,--no-whole-archive)
 # target_link_libraries(test_buffer -lglog)
+
+# test
+add_executable(test_tensor_shape ${CMAKE_CURRENT_LIST_DIR}/test/core/tensor_shape_test.cc ${ALL_SRC})
+target_link_libraries(test_tensor_shape -Wl,--whole-archive  -lpthread -Wl,--no-whole-archive)
+target_link_libraries(test_tensor_shape -lglog -lgtest gtest_main)

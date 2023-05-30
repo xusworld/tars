@@ -15,13 +15,18 @@ namespace tars {
 
 namespace {
 
+constexpr int32_t kMaxTensorDims = 6;
+
 using Vector = std::vector<int32_t>;
 
 }  // namespace
 
 class TensorShape : public Vector {
  public:
-  TensorShape() = default;
+  TensorShape() {
+    DLOG(INFO) << ", returns a default shape object.";
+    // this->resize(kMaxTensorDims, 0);
+  }
 
   TensorShape(const std::vector<int32_t>& dims) {
     this->assign(dims.begin(), dims.end());

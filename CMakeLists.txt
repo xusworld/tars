@@ -13,6 +13,7 @@ set(ACE_BUILD_THIRD_PARTY_PATH ${CMAKE_BINARY_DIR}/third-party)
 
 include(${CMAKE_CURRENT_LIST_DIR}/cmake/gflags.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/cmake/glog.cmake)
+include(${CMAKE_CURRENT_LIST_DIR}/cmake/gtest.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/cmake/protobuf.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/cmake/flatbuffers.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/cmake/xbyak.cmake)

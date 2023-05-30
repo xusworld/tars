@@ -110,7 +110,7 @@ Status Interpreter::build_workspace() {
 
   for (int i = 0; i < ops_size; i++) {
     auto op = graph_->oplists()->GetAs<Op>(i);
-    ops.emplace_back(op);
+    // ops.emplace_back(op);
   }
 
   for (auto op : ops) {
