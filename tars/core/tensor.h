@@ -15,8 +15,8 @@ namespace tars {
 class Tensor {
  public:
   // C++ type traits trick
-  typedef typename DataTypeTraits<DataType_DT_FLOAT>::value_type T;
-  typedef typename DataTypeTraits<DataType_DT_FLOAT>::pointer TPtr;
+  // typedef typename DataTypeTraits<DataType_DT_FLOAT>::value_type T;
+  // typedef typename DataTypeTraits<DataType_DT_FLOAT>::pointer TPtr;
 
   Tensor() {
     DLOG(INFO) << "default create a new Tensor.";
@@ -83,7 +83,10 @@ class Tensor {
     }
   }
 
-  // return device id of the tensor
+  // returns machine id of the tensor
+  int32_t machine_id() const { return 0; }
+
+  // returns device id of the tensor
   int32_t device_id() const { return 0; }
 
   // returns true if the tensor is empty (or uninitialized)
@@ -123,14 +126,18 @@ class Tensor {
   int32_t width() const;
 
   // return the data of the tensor
+  template <typename T>
   const T *data() const {
-    LOG(INFO) << "buff_.use_count(): " << buff_.use_count();
-    LOG(INFO) << "buff_.get() " << buff_.get();
+    // LOG(INFO) << "buff_.use_count(): " << buff_.use_count();
+    // LOG(INFO) << "buff_.get() " << buff_.get();
     return buff_.get()->data();
   }
 
   // return the data of the tensor
-  T *mutable_data() const { return buff_.get()->mutable_data(); }
+  template <typename T>
+  T *mutable_data() const {
+    return buff_.get()->mutable_data();
+  }
 
   // returns the shape of the tensor
   TensorShape mutable_shape() const { return shape_; }
@@ -182,7 +189,7 @@ class Tensor {
   Status resize(const std::vector<int32_t> &dims) { return Status::OK(); }
 
   // reset memory
-  Status reset(const T val) {
+  Status reset(const int val) {
     LOG(INFO) << "reset val: " << val;
     this->buff_.get()->reset(val);
 

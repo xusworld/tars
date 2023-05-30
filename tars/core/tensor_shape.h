@@ -1,7 +1,5 @@
 #pragma once
 
-#include <glog/logging.h>
-
 #include <cstdint>
 #include <functional>
 #include <iostream>
@@ -9,6 +7,7 @@
 #include <numeric>
 #include <vector>
 
+#include "glog/logging.h"
 #include "tars/core/utils.h"
 #include "tars/ir/types_generated.h"
 
@@ -22,7 +21,7 @@ using Vector = std::vector<int32_t>;
 
 class TensorShape : public Vector {
  public:
-  TensorShape() {}
+  TensorShape() = default;
 
   TensorShape(const std::vector<int32_t>& dims) {
     this->assign(dims.begin(), dims.end());
@@ -36,7 +35,7 @@ class TensorShape : public Vector {
 
   ~TensorShape() = default;
 
-  // Basic operator overloading function.
+  // some operator overloading methods
   TensorShape& operator=(const TensorShape& shape);
   TensorShape operator+(const TensorShape& shape);
   TensorShape operator-(const TensorShape& shape);
@@ -56,7 +55,7 @@ class TensorShape : public Vector {
   bool operator>=(const TensorShape& shape) const;
   bool operator==(const TensorShape& shape) const;
 
-  // Return a sub shape.
+  // returns a sub shape
   TensorShape subshape(const int32_t start, const int32_t end) const {
     CHECK_LT(start, end)
         << "TensorShape::elems 'start' value should less than 'end'";
@@ -69,29 +68,32 @@ class TensorShape : public Vector {
     return shape;
   }
 
-  // If a empty tensor shape.
+  // is a empty tensor shape or not.
   bool empty() const { return this->size() == 0; }
 
-  // Return number of dimensions in this shape.
+  // returns the number of dimension of the shape.
   int32_t dims() const { return this->size(); }
 
-  // Reset the value of tensor shape.
+  // returns the number of dimension of the shape.
+  int32_t rank() const { return dims(); }
+
+  // reset the value of the shape.
   void reset(const std::vector<int32_t>& dims) {
     return this->assign(dims.begin(), dims.end());
   }
 
-  // Reset the value of tensor shape.
+  // reset the value of the shape.
   void reset(const TensorShape& shape) {
     this->assign(shape.begin(), shape.end());
   }
 
-  // Return tensor's element size.
+  // returns tensor's element size.
   int32_t elems() const {
     return std::accumulate(this->begin(), this->end(), 1,
                            std::multiplies<int32_t>());
   }
 
-  // Return tensor's element size.
+  // returns tensor's element size.
   int32_t elems(const int32_t start, const int32_t end) const {
     CHECK_LT(start, end)
         << "TensorShape::elems 'start' value should less than 'end'";
@@ -102,16 +104,16 @@ class TensorShape : public Vector {
                            std::multiplies<int32_t>());
   }
 
-  // Append a value.
+  // append a value to the shape.
   void append(const int32_t val) { this->push_back(val); }
 
-  // A helper function, only use for debug mode.
+  // a helper function, only use for debug mode.
   std::string debug_string() const;
 
-  // Return a zero tensor shape has the same dimension of input shape.
+  // returns a zero tensor shape has the same dimension of input shape.
   static TensorShape zero(const TensorShape& shape);
 
-  // Return a minus one tensor shape has the same dimension of input shape.
+  // returns a minus one tensor shape has the same dimension of input shape.
   static TensorShape minusone(const TensorShape& shape);
 };
 
