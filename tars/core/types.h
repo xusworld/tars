@@ -5,6 +5,35 @@
 
 namespace tars {
 
+/** backend buffer storage type */
+enum StorageType {
+  /**
+   use NOT reusable memory.
+   - allocates memory when `onAcquireBuffer` is called.
+   - releases memory when `onReleaseBuffer` is called or when the backend is
+   deleted.
+   - do NOTHING when `onClearBuffer` is called.
+   */
+  STATIC,
+  /**
+   use reusable memory.
+   - allocates or reuses memory when `onAcquireBuffer` is called. prefers
+   reusing.
+   - collects memory for reuse when `onReleaseBuffer` is called.
+   - releases memory when `onClearBuffer` is called or when the backend is
+   deleted.
+   */
+  DYNAMIC,
+  /**
+   use NOT reusable memory.
+   - allocates memory when `onAcquireBuffer` is called.
+   - do NOTHING when `onReleaseBuffer` is called.
+   - releases memory when `onClearBuffer` is called or when the backend is
+   deleted.
+   */
+  DYNAMIC_SEPERATE
+};
+
 enum class TensorKind {
   None,
   Input,   // input tensor
