@@ -3,28 +3,24 @@
 namespace tars {
 namespace cuda {
 
-template <typename T>
-void CopyD2D(T* dst, const T* src, size_t n, cudaStream_t stream) {
-  CUDA_CALL(cudaMemcpyAsync(dst, src, n * sizeof(T), cudaMemcpyDeviceToDevice,
+void CopyD2D(void* dst, const void* src, size_t n, cudaStream_t stream) {
+  CUDA_CALL(cudaMemcpyAsync(dst, src, n * sizeof(void),
+                            cudaMemcpyDeviceToDevice, stream));
+}
+
+void CopyD2H(void* dst, const void* src, size_t n, cudaStream_t stream) {
+  CUDA_CALL(cudaMemcpyAsync(dst, src, n * sizeof(void), cudaMemcpyDeviceToHost,
                             stream));
 }
 
-template <typename T>
-void CopyD2H(T* dst, const T* src, size_t n, cudaStream_t stream) {
-  CUDA_CALL(
-      cudaMemcpyAsync(dst, src, n * sizeof(T), cudaMemcpyDeviceToHost, stream));
+void CopyH2D(void* dst, const void* src, size_t n, cudaStream_t stream) {
+  CUDA_CALL(cudaMemcpyAsync(dst, src, n * sizeof(void), cudaMemcpyHostToDevice,
+                            stream));
 }
 
-template <typename T>
-void CopyH2D(T* dst, const T* src, size_t n, cudaStream_t stream) {
-  CUDA_CALL(
-      cudaMemcpyAsync(dst, src, n * sizeof(T), cudaMemcpyHostToDevice, stream));
-}
-
-template <typename T>
-void CopyH2H(T* dst, const T* src, size_t n, cudaStream_t stream) {
-  CUDA_CALL(
-      cudaMemcpyAsync(dst, src, n * sizeof(T), cudaMemcpyHostToHost, stream));
+void CopyH2H(void* dst, const void* src, size_t n, cudaStream_t stream) {
+  CUDA_CALL(cudaMemcpyAsync(dst, src, n * sizeof(void), cudaMemcpyHostToHost,
+                            stream));
 }
 
 }  // namespace cuda

@@ -9,16 +9,18 @@ class CudaAllocator : public Allocator {
   CudaAllocator() = default;
   virtual ~CudaAllocator() = default;
 
-  virtual Status allocate(void **ptr, const int32_t bytes) override;
-
-  virtual Status release(void *ptr) override;
-
   virtual RuntimeType runtime_type() const override {
     return RuntimeType::CUDA;
   }
 
+  virtual Status allocate(void **ptr, const size_t bytes) override;
+
+  virtual Status realloc(void **ptr, const size_t bytes) override;
+
   virtual Status reset(void *ptr, const int32_t val,
-                       const int32_t size) override;
+                       const size_t size) override;
+
+  virtual Status release(void *ptr) override;
 
   static CudaAllocator *get();
 

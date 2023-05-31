@@ -9,7 +9,15 @@
 
 namespace tars {
 
-Status CudaAllocator::allocate(void **ptr, const int32_t bytes) {
+Status CudaAllocator::allocate(void **ptr, const size_t bytes) {
+  CUDA_CHECK(cudaMalloc(&ptr, bytes));
+  *ptr = reinterpret_cast<char *>(ptr);
+
+  CHECK(*ptr != NULL) << "malloc return a null pointer, please check";
+  return Status::OK();
+}
+
+Status CudaAllocator::realloc(void **ptr, const size_t bytes) {
   CUDA_CHECK(cudaMalloc(&ptr, bytes));
   *ptr = reinterpret_cast<char *>(ptr);
 
@@ -35,7 +43,7 @@ CudaAllocator *CudaAllocator::get() {
   return alloc_;
 }
 
-Status CudaAllocator::reset(void *ptr, const int32_t val, const int32_t size) {
+Status CudaAllocator::reset(void *ptr, const int32_t val, const size_t size) {
   return Status::OK();
 }
 

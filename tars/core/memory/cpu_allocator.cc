@@ -13,18 +13,24 @@ namespace tars {
 
 #define X64_ALIGNED_BYTES 32
 
-Status CpuAllocator::allocate(void **ptr, const int32_t bytes) {
-  *ptr = reinterpret_cast<void *>(_mm_malloc(bytes, X64_ALIGNED_BYTES));
-  CHECK(*ptr != NULL) << "malloc return a null pointer, please check";
+Status CpuAllocator::allocate(void **ptr, const size_t bytes) {
+  *ptr = reinterpret_cast<void *>(::_mm_malloc(bytes, X64_ALIGNED_BYTES));
+  CHECK(*ptr != NULL) << "malloc return a null pointer";
+  return Status::OK();
+}
+
+Status CpuAllocator::realloc(void **ptr, const size_t bytes) {
+  *ptr = ::realloc(ptr, bytes);
+  CHECK(*ptr != NULL) << "realloc return a null pointer";
   return Status::OK();
 }
 
 Status CpuAllocator::release(void *ptr) {
   if (ptr != nullptr) {
-    // Memory that is allocated using _mm_malloc must be freed using _mm_free.
+    // memory that is allocated using _mm_malloc must be freed using _mm_free.
     _mm_free(ptr);
   } else {
-    LOG(INFO) << "ptr is a null pointer, please check.";
+    DLOG(INFO) << "ptr is a null pointer, no need to release again";
   }
 
   return Status::OK();
@@ -41,8 +47,8 @@ Status async_memcpy(void *dst, size_t dst_offset, int dst_id, const void *src,
   return Status::OK();
 }
 
-Status CpuAllocator::reset(void *ptr, const int32_t val, const int32_t size) {
-  memset(ptr, val, size);
+Status CpuAllocator::reset(void *ptr, const int32_t val, const size_t size) {
+  ::memset(ptr, val, size);
 
   return Status::OK();
 }
