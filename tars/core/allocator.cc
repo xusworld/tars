@@ -5,6 +5,6 @@
 
 namespace tars {
 
-int32_t Allocator::device_id() const { return 0; }
+// TODO(xusworld)
 
 }  // namespace tars

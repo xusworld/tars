@@ -19,17 +19,26 @@ class Allocator {
   Allocator() = default;
   virtual ~Allocator() = default;
 
-  // Every allocator always belongs to a device. For cpu allocator, device_id ==
-  // 0; for cuda allocator, device_id == gpu_device_id
-  virtual int32_t device_id() const;
+  // returns the machine id
+  virtual int32_t machine_id() const { return 0; }
 
-  virtual Status allocate(void **ptr, const int32_t bytes) = 0;
+  // returns the device id
+  virtual int32_t device_id() const { return 0; }
 
-  virtual Status release(void *ptr) = 0;
-
-  virtual Status reset(void *ptr, const int32_t val, const int32_t size) = 0;
-
+  // returns the runtime type
   virtual RuntimeType runtime_type() const = 0;
+
+  // allocates size bytes of uninitialized storage
+  virtual Status allocate(void **ptr, const size_t size) = 0;
+
+  // reallocates the given area of memory
+  virtual Status realloc(void **ptr, const size_t new_size) = 0;
+
+  // reset the given memory
+  virtual Status reset(void *ptr, const int32_t val, const size_t size) = 0;
+
+  // release the memory
+  virtual Status release(void *ptr) = 0;
 };
 
 }  // namespace tars
