@@ -9,6 +9,11 @@ TensorShape& TensorShape::operator=(const TensorShape& right) {
   return *this;
 }
 
+// TensorShape& TensorShape::operator=(const std::vector<int>& right) {
+//   this->assign(right.begin(), right.end());
+//   return *this;
+// }
+
 TensorShape TensorShape::operator+(const TensorShape& shape) {
   TensorShape tmp_shape(*this);
   int* p = data();

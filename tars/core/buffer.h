@@ -1,4 +1,5 @@
-#pragma once
+#ifndef TARS_CORE_BUFFER_H_
+#define TARS_CORE_BUFFER_H_
 
 #include <cuda_runtime.h>
 
@@ -39,20 +40,23 @@ class Buffer {
     CHECK_GT(size, 0) << "buffer size: " << size
                       << " <= 0, which is not a valid size.";
 
-    // allocate a new memory space, so buffer will be a unshared buffer
-    DLOG(INFO) << "Buffer runtime type: " << RuntimeTypeToString(rtype);
+    // DLOG(INFO) << "Buffer runtime type: " << RuntimeTypeToString(rtype);
     this->allocator_ = RuntimeTypeToAllocator(RuntimeType::CPU);
-    this->device_id_ = this->allocator_->device_id();
+    device_id_ = this->allocator_->device_id();
+
     auto status = allocator_->allocate(&data_, size);
+    CHECK(status == Status::OK()) << ", allocate new buffer failed.";
+    bytes_ = size;
+    capacity_ = size;
   }
 
   Buffer(const Buffer& other) {
-    CHECK_GT(other.size_, 0) << "buffer size: " << other.size_
-                             << " <= 0, which is not a valid size.";
+    CHECK_GT(other.bytes_, 0) << "buffer size: " << other.bytes_
+                              << " <= 0, which is not a valid size.";
 
-    size_ = other.size_;
-    // buffers on the same device
-    if (this->allocator_->device_id() == other.device_id_) {
+    bytes_ = other.bytes_;
+    // on the same device
+    if (device_id_ == other.device_id_) {
       data_ = other.data_;
       shared_ = other.shared_;
       capacity_ = other.capacity_;
@@ -66,20 +70,20 @@ class Buffer {
   Buffer& operator=(Buffer&& other) {
     rtype_ = other.rtype_;
     dtype_ = other.dtype_;
-    size_ = other.size_;
+    bytes_ = other.bytes_;
     capacity_ = other.capacity_;
     shared_ = false;
     data_ = other.data_;
 
     // set input buffer object to a empty buffer
-    other.size_ = 0;
+    other.bytes_ = 0;
     other.capacity_ = 0;
     other.shared_ = false;
     return *this;
   }
 
   Buffer& operator=(Buffer& buf) {
-    this->size_ = buf.size_;
+    this->bytes_ = buf.bytes_;
     // buffer on the same device id
     if (this->device_id_ == buf.device_id_) {
       this->data_ = buf.data_;
@@ -122,19 +126,19 @@ class Buffer {
   int32_t device_id() const { return device_id_; }
 
   // returns buffer size
-  int32_t size() const { return size_; }
+  int32_t size() const { return bytes_; }
 
   // returns buffer capacity
   int32_t capacity() const { return capacity_; }
 
   // checks whether this buffer is empty
-  bool empty() const { return size_ == 0; }
+  bool empty() const { return bytes_ == 0; }
 
   // checks whether this buffer is a shared buffer
   bool shared() const { return shared_; }
 
   // clears the contents of the buffer
-  void clear() { size_ = 0; }
+  void clear() { bytes_ = 0; }
 
   // free a buffer
   void free() {
@@ -142,7 +146,7 @@ class Buffer {
       this->allocator_->release(data_);
     }
 
-    size_ = 0;
+    bytes_ = 0;
     capacity_ = 0;
   }
 
@@ -202,10 +206,10 @@ class Buffer {
   // to its first count elements.If the current size is less than count,1)
   // additional default-inserted elements are appended
   void resize(const size_t count) {
-    if (size_ >= count) {
-      size_ = count;
+    if (bytes_ >= count) {
+      bytes_ = count;
     } else if (capacity_ >= count) {
-      size_ = count;
+      bytes_ = count;
     } else {
       // reallocate memory space
       auto new_cap = 2 * capacity_;
@@ -214,12 +218,21 @@ class Buffer {
     }
   }
 
+  void resize(const std::vector<int32_t>& dims) {
+    const auto size = std::accumulate(dims.begin(), dims.end(), 1,
+                                      std::multiplies<int32_t>());
+    const auto bytes = size * DataType2Bytes(dtype_);
+
+    resize(bytes);
+  }
+
   Status realloc(const int32_t size);
 
-  // Increase the capacity of the vector (the total number of elements that the
-  // vector can hold without requiring reallocation) to a value that's greater
-  // or equal to new_cap. If new_cap is greater than the current capacity(), new
-  // storage is allocated, otherwise the function does nothing.
+  // Increase the capacity of the vector (the total number of elements that
+  // the vector can hold without requiring reallocation) to a value that's
+  // greater or equal to new_cap. If new_cap is greater than the current
+  // capacity(), new storage is allocated, otherwise the function does
+  // nothing.
   void reserve(const size_t new_cap);
 
   // reset memory
@@ -253,7 +266,7 @@ class Buffer {
   void* mapped_data_ = nullptr;
 
   // buffer's bytes
-  int32_t size_ = 0;
+  int32_t bytes_ = 0;
   // buffer's capacity
   int32_t capacity_ = 0;
   // a flag, mark data_ in the buffer shared with other buffer or not
@@ -261,3 +274,5 @@ class Buffer {
 };
 
 }  // namespace tars
+
+#endif  // TARS_CORE_BUFFER_H_

@@ -27,4 +27,5 @@ inline std::string RuntimeTypeToString(const RuntimeType type) {
       return "Runtime unknown";
   }
 }
+
 }  // namespace tars

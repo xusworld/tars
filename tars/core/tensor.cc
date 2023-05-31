@@ -37,4 +37,20 @@ int32_t Tensor::width() const {
   return -1;
 }
 
+// squeeze the tensor
+Status Tensor::squeeze(const int32_t axis) {
+  CHECK(axis < shape_.rank())
+      << ", axis: " << axis << " > tensor dimensions: " << shape_.rank();
+
+  return Status::OK();
+}
+
+// unsqueeze the tensor
+Status Tensor::unsqueeze(const int32_t axis) { return Status::OK(); }
+
+// flatten the tensor
+Status Tensor::flatten(const int32_t start_dim, const int32_t end_dim) {
+  return Status::OK();
+}
+
 }  // namespace tars

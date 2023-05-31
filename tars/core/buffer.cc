@@ -28,7 +28,7 @@ Status Buffer::realloc(const int32_t size) {
       }
 
       // update the value of size_ and capacity_
-      size_ = size;
+      bytes_ = size;
       capacity_ = size;
     }
   }
@@ -43,7 +43,7 @@ void Buffer::reserve(const size_t new_cap) {
 
 Status Buffer::reset(const int32_t val) {
   CHECK(data_ != nullptr) << ", null pointer, cannot reset.";
-  this->allocator_->reset(data_, val, size_);
+  this->allocator_->reset(data_, val, bytes_);
   return Status::OK();
 }
 

@@ -39,7 +39,7 @@ class UniqueShapeInfer : public ShapeInfer {
 
     std::unordered_set<int> unique_values;
     for (int i = 0; i < inputs[0]->size(); ++i) {
-      unique_values.insert(inputs[0]->data<DataType_DT_INT32>()[i]);
+      unique_values.insert(inputs[0]->data<int>()[i]);
     }
 
     // set output's data format

@@ -79,7 +79,7 @@ Status Interpreter::initInputs() {
 
       LOG(INFO) << "tensor reshape to " << shape;
       tensor.reshape(shape);
-      tensor.set_dtype(option->dtype());
+      tensor.astype(option->dtype());
       tensor.set_dformat(DataFormat_NCHW);
 
       tensors.push_back(std::move(&tensor));

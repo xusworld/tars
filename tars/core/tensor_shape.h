@@ -42,6 +42,8 @@ class TensorShape : public Vector {
 
   // some operator overloading methods
   TensorShape& operator=(const TensorShape& shape);
+  // TensorShape& operator=(const std::vector<int>& shape);
+
   TensorShape operator+(const TensorShape& shape);
   TensorShape operator-(const TensorShape& shape);
 
