@@ -49,3 +49,4 @@ target_link_libraries(acecore -lglog)
 add_executable(test_tensor_shape ${CMAKE_CURRENT_LIST_DIR}/test/core/tensor_shape_test.cc ${ALL_SRC})
 target_link_libraries(test_tensor_shape -Wl,--whole-archive  -lpthread -Wl,--no-whole-archive)
 target_link_libraries(test_tensor_shape -lglog -lgtest gtest_main)
+·
