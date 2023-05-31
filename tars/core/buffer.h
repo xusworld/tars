@@ -31,7 +31,6 @@ Allocator* RuntimeTypeToAllocator(const RuntimeType type) {
 
 }  // namespace
 
-template <typename T>
 class Buffer {
  public:
   Buffer(const RuntimeType rtype = RuntimeType::CPU,
@@ -41,11 +40,10 @@ class Buffer {
                       << " <= 0, which is not a valid size.";
 
     // allocate a new memory space, so buffer will be a unshared buffer
-    // LOG(INFO) << "Buffer runtime type: " << RuntimeTypeToString(rtype);
+    DLOG(INFO) << "Buffer runtime type: " << RuntimeTypeToString(rtype);
     this->allocator_ = RuntimeTypeToAllocator(RuntimeType::CPU);
     this->device_id_ = this->allocator_->device_id();
-    auto status = this->reallocate(size);
-    LOG(INFO) << "init a new buffer";
+    auto status = allocator_->allocate(&data_, size);
   }
 
   Buffer(const Buffer& other) {
@@ -98,26 +96,42 @@ class Buffer {
     free();
   }
 
-  // operator overloading
-  operator T*() { return data_; }
-  operator const T*() const { return data_; }
+  template <typename T>
+  operator const T*() const {
+    return reinterpret_cast<const T*>(data_);
+  }
 
-  // returns buffer's data pointer
-  const T* data() const { return data_; }
-  T* mutable_data() const { return data_; }
+  template <typename T>
+  operator T*() {
+    return reinterpret_cast<T*>(data_);
+  }
 
-  // checks whether the container is empty
-  bool empty() const { return size_ == 0; }
+  // returns const data pointer
+  template <typename T>
+  const T* data() const {
+    return reinterpret_cast<const T*>(data_);
+  }
 
-  // returns the number of elements
+  // returns data pointer
+  template <typename T>
+  T* mutable_data() const {
+    return reinterpret_cast<T*>(data_);
+  }
+
+  // returns the device id
+  int32_t device_id() const { return device_id_; }
+
+  // returns buffer size
   int32_t size() const { return size_; }
 
-  // returns bytes of the buffer
-  int32_t bytes() const { return size_ * sizeof(T); }
+  // returns buffer capacity
+  int32_t capacity() const { return capacity_; }
 
-  // returns the number of elements that can be held in currently allocated
-  // storage
-  int32_t capacity() const { return capacity_; };
+  // checks whether this buffer is empty
+  bool empty() const { return size_ == 0; }
+
+  // checks whether this buffer is a shared buffer
+  bool shared() const { return shared_; }
 
   // clears the contents of the buffer
   void clear() { size_ = 0; }
@@ -132,62 +146,91 @@ class Buffer {
     capacity_ = 0;
   }
 
-#ifdef ACE_USE_CUDA
-  // copy from host to device
-  void from_host(const T* src, size_t count, cudaStream_t stream = 0) {
-    clear();
-    resize(count);
-    cuda::copyH2D(data_, src, size(), stream);
-  }
+  // TODO(xusworld) impl this.
+  void map() {}
 
-  // copy from device to device
-  void from_device(const T* src, size_t count, cudaStream_t stream = 0) {
-    clear();
-    resize(count);
-    cuda::copyD2D(data_, src, size(), stream);
-  }
+  void unmap() {}
 
-  // copy from device to device
-  void copy(const Buffer& src, cudaStream_t stream = 0) {
-    clear();
-    resize(src.size());
-    copyD2D(data_, src.data(), size(), stream);
-  }
+  void copy_host(const void* src, const size_t bytes) {
+    this->clear();
+    this->resize(bytes);
 
-  // reserve a buffer
-  void reserve(size_t new_cap, cudaStream_t stream = 0) {
-    if (new_cap > capacity_) {
-      // reallocate(new_cap, stream);
+    if (rtype_ == RuntimeType::CPU) {
+      // host to host memory copy
+      ::memcpy(data_, src, bytes);
+    } else if (rtype_ == RuntimeType::CUDA) {
+      // host to device memory copy on default stream
+      cuda::CopyH2D(data_, src, bytes, 0);
     }
   }
 
-  // resize a buffer
-  void resize(size_t new_size, cudaStream_t stream = 0) {
-    if (new_size > capacity_) {
-      size_t new_cap = 2 * capacity_;
-      if (new_size > new_cap) new_cap = new_size;
-      reallocate(new_cap, stream);
+  void copy_host(cudaStream_t stream, const void* src, const size_t bytes) {
+    this->clear();
+    this->resize(bytes);
+
+    if (rtype_ == RuntimeType::CPU) {
+      // host to host memory copy
+      ::memcpy(data_, src, bytes);
+    } else if (rtype_ == RuntimeType::CUDA) {
+      // host to device memory copy on non-default stream
+      cuda::CopyH2D(data_, src, bytes, stream);
     }
-    size_ = new_size;
   }
-#endif
 
-  // host memory copy
-  void copy(const Buffer& src);
+  void copy_device(const void* src, const size_t bytes) {
+    if (rtype_ == RuntimeType::CPU) {
+      // device to host memory copy on default stream
+      cuda::CopyD2H(data_, src, bytes, 0);
+    } else if (rtype_ == RuntimeType::CUDA) {
+      // device to device memory copy on default stream
+      cuda::CopyD2D(data_, src, bytes, 0);
+    }
+  }
 
-  // host memory reserve
-  void reserve(size_t new_cap);
+  void copy_device(cudaStream_t stream, const void* src, const size_t bytes) {
+    if (rtype_ == RuntimeType::CPU) {
+      // device to host memory copy on non-default stream
+      cuda::CopyD2H(data_, src, bytes, stream);
+    } else if (rtype_ == RuntimeType::CUDA) {
+      // device to deivce memory copy on non-default stream
+      cuda::CopyD2D(data_, src, bytes, stream);
+    }
+  }
 
-  // host memory resize
-  void resize(const std::vector<int32_t>& dims);
-  void resize(size_t size);
+  // Resizes the container to contain count elements, does nothing if count ==
+  // size().If the current size is greater than count, the container is reduced
+  // to its first count elements.If the current size is less than count,1)
+  // additional default-inserted elements are appended
+  void resize(const size_t count) {
+    if (size_ >= count) {
+      size_ = count;
+    } else if (capacity_ >= count) {
+      size_ = count;
+    } else {
+      // reallocate memory space
+      auto new_cap = 2 * capacity_;
+      if (count > new_cap) new_cap = count;
+      this->realloc(new_cap);
+    }
+  }
 
-  // reallocte memory
-  Status reallocate(const int32_t size);
-  Status reallocate(const std::vector<int32_t>& dims);
+  Status realloc(const int32_t size);
+
+  // Increase the capacity of the vector (the total number of elements that the
+  // vector can hold without requiring reallocation) to a value that's greater
+  // or equal to new_cap. If new_cap is greater than the current capacity(), new
+  // storage is allocated, otherwise the function does nothing.
+  void reserve(const size_t new_cap);
 
   // reset memory
-  Status reset(const T val);
+  Status reset(const int32_t val);
+
+  // // reserve a buffer
+  // void reserve(size_t new_cap, cudaStream_t stream = 0) {
+  //   if (new_cap > capacity_) {
+  //     // reallocate(new_cap, stream);
+  //   }
+  // }
 
  private:
   void init() {
@@ -195,21 +238,24 @@ class Buffer {
     rtype_ = allocator_->runtime_type();
   }
 
+  // buffer's device id, which device the buffer belongs to
+  int32_t device_id_ = 0;
+
   // buffer's allocator
   Allocator* allocator_;
   // buffer's runtime type
   RuntimeType rtype_;
   // buffer's data type
   DataType dtype_;
-  // buffer's elements number
-  int32_t size_ = 0;
-  // buffer's capacity, the number of elements that can be held in currently
-  // allocated storage
-  int32_t capacity_ = 0;
   // buffer's underlying memory
-  T* data_ = nullptr;
-  // buffer's device id, which device the buffer belongs to
-  int32_t device_id_ = 0;
+  void* data_ = nullptr;
+  // buffer's underlying memory
+  void* mapped_data_ = nullptr;
+
+  // buffer's bytes
+  int32_t size_ = 0;
+  // buffer's capacity
+  int32_t capacity_ = 0;
   // a flag, mark data_ in the buffer shared with other buffer or not
   bool shared_ = false;
 };
