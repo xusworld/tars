@@ -1,30 +1,20 @@
-# 项目介绍
-
-
-## 项目结构
-
-传统推理框架的架构设计。
-
-## 项目特性
-
-
-
 # 开发计划
 
-2023年5月上旬
+## 2023/05
 
-## 离线工具（部分完成）
-1. Onnx IR --> tars IR
+Implement basic concepts of a deep learning framework.
 
-## 设计 tars IR
+### Tars IR
 tars ir
 - graph
 - op
 - tensor
 - types
 
-2023年5月中旬
-## 运行时模块
+### Offline Tools
+1. Onnx IR --> tars IR
+
+### Runtime Design
 1. core
     - Allocator
     - Buffer
@@ -38,11 +28,19 @@ tars ir
     - String Tools
 
 
-## 基础算子开发
+## 2023/06
 
-2023年5月下旬
+Ready to run the first demo!
 
-### CPU(x86)
+### Core
+
+1. Shape Inference
+2. Cuda Device/Runtime
+3. Cpu(x86) Device/Runtime
+
+### Ops
+
+CPU(x86)
 
 1. Elementwise
 2. Binary
@@ -63,7 +61,7 @@ tars ir
 17. Conv
 18. LRN
 
-### CUDA
+ CUDA
 
 1. Elementwise
 2. Binary
