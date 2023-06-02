@@ -43,7 +43,7 @@ class TileShapeInfer : public ShapeInfer {
     CHECK(multiples->rank() == 1)
         << ", multiples tensor should be a 1-D tensor.";
 
-    // inference the shape of output
+    // inference the shape of output tensor
     TensorShape shape;
     for (int i = 0; i < multiples->size(); ++i) {
       shape[i] = input->shape()[i] * multiples->data<int32_t>()[i];

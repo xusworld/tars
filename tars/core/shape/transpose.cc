@@ -19,11 +19,20 @@ class TransposeShapeInfer : public ShapeInfer {
   // inputs shape --> outputs shape
   virtual Status run(const tars::Op* op, const std::vector<Tensor*>& inputs,
                      std::vector<Tensor*>& outputs) {
-    DLOG(INFO) << "CastShapeInfer...";
+    DLOG(INFO) << "Transpose op shape inference ...";
     // check inputs number and outputs number
-    CHECK(inputs.size() >= 2)
-        << ", concat ops should have more than two inputs.";
-    CHECK(outputs.size() == 1) << ", concat ops shoule have one output.";
+    CHECK(inputs.size() == 2) << ", transpose ops should have two inputs.";
+    CHECK(outputs.size() == 1) << ", transpose ops shoule have one output.";
+
+    auto input = inputs[0];
+    // Permutes the dimensions according to the value of perm.
+    auto perm = inputs[1];
+
+    const int dims = input->buffer().dimensions;
+    if (perm->getType().code != halide_type_int || 32 != perm->getType().bits ||
+        dims != perm->buffer().dim[0].extent) {
+      return false;
+    }
 
     // set output's data format
     outputs[0]->set_dformat(inputs[0]->dformat());

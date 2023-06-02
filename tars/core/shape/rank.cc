@@ -1,5 +1,5 @@
-#ifndef TARS_CORE_SHAPE_SIZE_H_
-#define TARS_CORE_SHAPE_SIZE_H_
+#ifndef TARS_CORE_SHAPE_RANK_H_
+#define TARS_CORE_SHAPE_RANK_H_
 
 #include <vector>
 
@@ -9,19 +9,17 @@
 namespace tars {
 namespace core {
 
-// Returns the size of a tensor. Returns a 0-D Tensor representing the number of
-// elements in input of type out_type.
-
-class SizeShapeInfer : public ShapeInfer {
+// Returns the rank of a tensor.
+class RankShapeInfer : public ShapeInfer {
  public:
-  DISABLE_COPY_MOVE_ASSIGN(SizeShapeInfer);
+  DISABLE_COPY_MOVE_ASSIGN(RankShapeInfer);
 
-  virtual ~SizeShapeInfer() = default;
+  virtual ~RankShapeInfer() = default;
 
   // inputs shape --> outputs shape
   virtual Status run(const tars::Op* op, const std::vector<Tensor*>& inputs,
                      std::vector<Tensor*>& outputs) {
-    DLOG(INFO) << "Size op shape inference ...";
+    DLOG(INFO) << "Rank op shape inference ...";
 
     // check inputs and outputs number
     CHECK(inputs.size() == 1) << ", size ops should have one input.";
@@ -41,4 +39,4 @@ class SizeShapeInfer : public ShapeInfer {
 }  // namespace core
 }  // namespace tars
 
-#endif  // TARS_CORE_SHAPE_SIZE_H_
+#endif  // TARS_CORE_SHAPE_RANK_H_

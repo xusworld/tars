@@ -26,7 +26,7 @@ class UniqueShapeInfer : public ShapeInfer {
   // inputs shape --> outputs shape
   virtual Status run(const tars::Op* op, const std::vector<Tensor*>& inputs,
                      std::vector<Tensor*>& outputs) {
-    DLOG(INFO) << "UniqueShapeInfer ...";
+    DLOG(INFO) << "Unique op shape inference ...";
     // check inputs number and outputs number
     CHECK(inputs.size() == 1) << ", unique op should have one input.";
 
@@ -48,7 +48,7 @@ class UniqueShapeInfer : public ShapeInfer {
     outputs[0]->reshape(inputs[0]->shape());
     // set output's data type
     const auto opParam = op->main_as_CastParam();
-    outputs[0]->set_dtype(opParam->dstT());
+    outputs[0]->astype(opParam->dstT());
 
     return Status::OK();
   }

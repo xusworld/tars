@@ -9,7 +9,8 @@
 namespace tars {
 namespace core {
 
-// Concatenates tensors along one dimension.
+// Given tensor, this operation returns a new tf.Tensor that has the same values
+// as tensor in the same order, except with a new shape given by shape.
 class ReshapeShapeInfer : public ShapeInfer {
  public:
   DISABLE_COPY_MOVE_ASSIGN(ReshapeShapeInfer);
@@ -19,19 +20,21 @@ class ReshapeShapeInfer : public ShapeInfer {
   // inputs shape --> outputs shape
   virtual Status run(const tars::Op* op, const std::vector<Tensor*>& inputs,
                      std::vector<Tensor*>& outputs) {
-    DLOG(INFO) << "CastShapeInfer...";
+    DLOG(INFO) << "Reshape op shape inference ...";
     // check inputs number and outputs number
-    CHECK(inputs.size() >= 2)
-        << ", concat ops should have more than two inputs.";
-    CHECK(outputs.size() == 1) << ", concat ops shoule have one output.";
+    CHECK(inputs.size() == 1 || inputs.size() == 2)
+        << ", reshape ops should have one or two inputs.";
+    CHECK(outputs.size() == 1) << ", reshape ops shoule have one output.";
 
-    // set output's data format
-    outputs[0]->set_dformat(inputs[0]->dformat());
     // set output's tensor shape
     outputs[0]->reshape(inputs[0]->shape());
     // set output's data type
-    const auto opParam = op->main_as_CastParam();
-    outputs[0]->set_dtype(opParam->dstT());
+    outputs[0]->astype(inputs[0]->dtype());
+    // set output's data format
+    outputs[0]->set_dformat(inputs[0]->dformat());
+
+    DLOG(INFO) << "input shape: " << inputs[0]->shape();
+    DLOG(INFO) << "output shape: " << outputs[0]->shape();
 
     return Status::OK();
   }

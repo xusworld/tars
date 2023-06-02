@@ -9,7 +9,9 @@
 namespace tars {
 namespace core {
 
-// Concatenates tensors along one dimension.
+// Returns a tensor containing the shape of the input tensor.returns a 1-D
+// integer tensor representing the shape of input. For a scalar input, the
+// tensor returned has a shape of (0,) and its value is the empty vector
 class ShapeShapeInfer : public ShapeInfer {
  public:
   DISABLE_COPY_MOVE_ASSIGN(ShapeShapeInfer);
@@ -19,19 +21,17 @@ class ShapeShapeInfer : public ShapeInfer {
   // inputs shape --> outputs shape
   virtual Status run(const tars::Op* op, const std::vector<Tensor*>& inputs,
                      std::vector<Tensor*>& outputs) {
-    DLOG(INFO) << "CastShapeInfer...";
+    DLOG(INFO) << "Shape op shape inference ...";
     // check inputs number and outputs number
-    CHECK(inputs.size() >= 2)
-        << ", concat ops should have more than two inputs.";
+    CHECK(inputs.size() == 1) << ", shape ops should have one input.";
     CHECK(outputs.size() == 1) << ", concat ops shoule have one output.";
 
+    // set output's tensor shape
+    outputs[0]->reshape({1});
+    // set output's data type
+    outputs[0]->astype(DataType_DT_INT32);
     // set output's data format
     outputs[0]->set_dformat(inputs[0]->dformat());
-    // set output's tensor shape
-    outputs[0]->reshape(inputs[0]->shape());
-    // set output's data type
-    const auto opParam = op->main_as_CastParam();
-    outputs[0]->set_dtype(opParam->dstT());
 
     return Status::OK();
   }
