@@ -41,5 +41,8 @@ third-party
 backup
 
 # Generated files
+benchmark/onnx
+benchmark/models
+
 tars/ir/*_generated.h
 ir/current/*_generated.h
